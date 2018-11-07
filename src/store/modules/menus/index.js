@@ -3,7 +3,7 @@ import * as types from '../../mutation-types'
 import Divider from './divider'
 import * as layout from './layout'
 import filter from './filter'
-import annotations from './annotations'
+// import annotations from './annotations'
 
 /*
 * - type :
@@ -23,14 +23,14 @@ const state = {
         icon: 'img-over-01-brain-roi-segmentation.svg'
       }
     },
-    {
-      name: 'SegmentationResultOveray',
-      type: 'action',
-      meta: {
-        label: 'Segmentation Result\nOverlay',
-        icon: 'img-over-02-segmentation-result-overay.svg'
-      }
-    },
+    // {
+    //   name: 'SegmentationResultOveray',
+    //   type: 'action',
+    //   meta: {
+    //     label: 'Segmentation Result\nOverlay',
+    //     icon: 'img-over-02-segmentation-result-overay.svg'
+    //   }
+    // },
     {
       name: 'AnalysisReport',
       type: 'action',
@@ -56,7 +56,7 @@ const state = {
       }
     },
     Divider,
-    layout.DivideDisplay,
+    // layout.DivideDisplay,
     layout.ExpandDisplay,
     layout.FlipdDisplay,
     Divider,
@@ -76,14 +76,14 @@ const state = {
         icon: 'img-over-06-pan.svg'
       }
     },
-    {
-      name: 'Stack',
-      type: 'select',
-      meta: {
-        label: 'Stack',
-        icon: 'img-over-19-stack.svg'
-      }
-    },
+    // {
+    //   name: 'Stack',
+    //   type: 'select',
+    //   meta: {
+    //     label: 'Stack',
+    //     icon: 'img-over-19-stack.svg'
+    //   }
+    // },
     {
       name: 'ZoomIn',
       type: 'action',
@@ -126,24 +126,24 @@ const state = {
       }
     },
     filter,
-    {
-      name: 'Reload',
-      type: 'action',
-      meta: {
-        label: 'Reload',
-        icon: 'img-over-13-reload.svg'
-      }
-    },
-    Divider,
-    annotations,
-    {
-      name: 'LoadAnnotation',
-      type: 'action',
-      meta: {
-        label: 'Load Annotation',
-        icon: 'img-over-15-load-annotation.svg'
-      }
-    },
+    // {
+    //   name: 'Reload',
+    //   type: 'action',
+    //   meta: {
+    //     label: 'Reload',
+    //     icon: 'img-over-13-reload.svg'
+    //   }
+    // },
+    // Divider,
+    // annotations,
+    // {
+    //   name: 'LoadAnnotation',
+    //   type: 'action',
+    //   meta: {
+    //     label: 'Load Annotation',
+    //     icon: 'img-over-15-load-annotation.svg'
+    //   }
+    // },
     Divider,
     {
       name: 'ShowTagsToggle',
