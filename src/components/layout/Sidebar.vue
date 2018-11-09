@@ -19,7 +19,7 @@
           </template>
           <template v-else>
             <a v-if="menu.type === 'select'"
-               :class="{ active: currentSelect.name == menu.name }"
+               :class="{ active: currentSelect && currentSelect.name === menu.name }"
                @click="menuClicked(menu)"
             >
               <img v-if="menu.meta.icon" :src="`/static/images/icons/svg/${menu.meta.icon}`">
@@ -59,16 +59,16 @@
                   class="submenu-item">
                 <a
                   v-if="subMenu.type === 'layout'"
-                  :class="{ active: currentLayout.name == subMenu.name }"
+                  :class="{ active: currentSelect && currentSelect.name === menu.name }"
                   @click="menuClicked(subMenu)">
-                  <img v-if="currentLayout.name == subMenu.name"
+                  <img v-if="currentSelect && currentLayout.name === subMenu.name"
                        :src="`/static/images/icons/svg/img-lnb-radio-sel.svg`">
                   <img v-else :src="`/static/images/icons/svg/img-lnb-radio-nor.svg`">
                   <span>{{ subMenu.meta.label }}</span>
                 </a>
                 <a
                   v-else-if="subMenu.type === 'select'"
-                  :class="{ active: currentSelect.name == subMenu.name }"
+                  :class="{ active: currentSelect && currentSelect.name === subMenu.name }"
                   @click="menuClicked(subMenu)">
                   <img v-if="subMenu.meta.icon" :src="`/static/images/icons/svg/${subMenu.meta.icon}`">
                   <span>{{ subMenu.meta.label }}</span>

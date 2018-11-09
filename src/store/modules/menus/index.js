@@ -3,7 +3,7 @@ import * as types from '../../mutation-types'
 import Divider from './divider'
 import * as layout from './layout'
 import filter from './filter'
-// import annotations from './annotations'
+import annotations from './annotations'
 
 /*
 * - type :
@@ -134,8 +134,8 @@ const state = {
     //     icon: 'img-over-13-reload.svg'
     //   }
     // },
-    // Divider,
-    // annotations,
+    Divider,
+    annotations,
     // {
     //   name: 'LoadAnnotation',
     //   type: 'action',

@@ -17,7 +17,7 @@
           <template v-if="files && files.length">
             <span
               class="file-name-span"
-              :style="focusedCanvas && focusedCanvas.id === 'layout-left' ? 'color: #583edb' : 'color: white'"
+              :style="focusedCanvas && focusedCanvas.id === 'layout-left' ? 'color: white' : 'color: gray'"
             >&nbsp; | &nbsp;Dicom : {{ files[0].name }}</span>
           </template>
           <template v-if="focusedCanvas && focusedCanvas.id === 'layout-left'"><span class="canvas-selected">&nbsp; (*)</span></template>
@@ -40,7 +40,7 @@
           <template v-if="files2 && files2.length">
             <span
               class="file-name-span"
-              :style="focusedCanvas && focusedCanvas.id === 'layout-right' ? 'color: #583edb' : 'color: white'"
+              :style="focusedCanvas && focusedCanvas.id === 'layout-right' ? 'color: white' : 'color: gray'"
             >&nbsp; | &nbsp;Dicom : {{ files2[0].name }}</span>
           </template>
           <template v-if="focusedCanvas && focusedCanvas.id === 'layout-right'"><span class="canvas-selected">&nbsp; (*)</span></template>
@@ -79,6 +79,7 @@
 
 <script>
   import {mapState} from 'vuex'
+  import * as mutationType from '@/store/mutation-types'
   import * as busType from '@/util/bus/bus-types'
 
   export default {
@@ -102,10 +103,14 @@
       },
       fileUploaded () {
         console.log('fileUploaded')
+        this.$store.commit(mutationType.SELECT_MENU, null)
+        this.$store.commit(mutationType.SELECT_CANVAS, null)
         this.$bus.$emit(busType.FILE_UPLOADED, { file: this.files[0], from: 'left' })
       },
       fileUploaded2 () {
         console.log('fileUploaded2')
+        this.$store.commit(mutationType.SELECT_MENU, null)
+        this.$store.commit(mutationType.SELECT_CANVAS, null)
         this.$bus.$emit(busType.FILE_UPLOADED, { file: this.files2[0], from: 'right' })
       }
     }
@@ -241,7 +246,7 @@
     color: white;
   }
   .canvas-selected {
-    color: $header-load-file-button-normal-color;
+    color: white;
   }
 
   .nav-help-button {

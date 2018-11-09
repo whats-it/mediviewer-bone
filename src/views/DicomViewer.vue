@@ -7,11 +7,11 @@
         <div class="layout-area">
           <div id="layout-left" class="layouts"
                ref="layoutLeft"
-               v-if="currentLayout.name === 'left' || currentLayout.name === 'both'"
+               v-show="currentLayout.name === 'left' || currentLayout.name === 'both'"
                :class="{ active: $refs.layoutLeft === focusedCanvas }"
                :style="layoutLeft.style"
-               @mousemove="onMouseMove"
-               @mousedown.left="mousedownLeft"
+               @mousemove="onMouseMove($event, 'left')"
+               @mousedown.left="mousedownLeft($event, 'left')"
                @mousedown.middle="mousedownMiddle"
                @mousedown.right="mousedownRight"
                @mouseup.left="mouseupLeft"
@@ -35,11 +35,11 @@
 
           <div id="layout-right" class="layouts"
                ref="layoutRight"
-               v-if="currentLayout.name === 'right' || currentLayout.name === 'both'"
+               v-show="currentLayout.name === 'right' || currentLayout.name === 'both'"
                :class="{ active: $refs.layoutRight === focusedCanvas }"
                :style="layoutRight.style"
-               @mousemove="onMouseMove"
-               @mousedown.left="mousedownLeft"
+               @mousemove="onMouseMove($event, 'right')"
+               @mousedown.left="mousedownLeft($event, 'right')"
                @mousedown.middle="mousedownMiddle"
                @mousedown.right="mousedownRight"
                @mouseup.left="mouseupLeft"
@@ -64,132 +64,25 @@
 
 
 
-          <!--<div id="layout-1-1" class="layouts"-->
-               <!--ref="layout1By1"-->
-               <!--v-if="currentLayout.name === '1By1' || currentLayout.name === '2By2' || currentLayout.name === '3By'"-->
-               <!--:class="{ active: $refs.layout1By1 === focusedCanvas }"-->
-               <!--:style="layout_1_1.style"-->
-               <!--@mousemove="onMouseMove"-->
-               <!--@mousedown.left="mousedownLeft"-->
-               <!--@mousedown.middle="mousedownMiddle"-->
-               <!--@mousedown.right="mousedownRight"-->
-               <!--@mouseup.left="mouseupLeft"-->
-               <!--@mouseup.middle="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseup.right="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseenter="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseleave="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseout="isMouseDown = false, mouseLastPosition = {}"-->
-          <!--&gt;-->
-            <!--<tag-info-->
-              <!--class="tags-info-view"-->
-              <!--v-show="showTags"-->
-            <!--&gt;</tag-info>-->
+          <div id="layout-1-0"
+               style="visibility: hidden">
+          </div>
+          <div id="layout-1-1"
+               style="visibility: hidden">
+          </div>
+          <div id="layout-1-2"
+               style="visibility: hidden">
+          </div>
 
-            <!--<div class="loading-spinner-dimmed-view"-->
-                 <!--v-if="loadingSpinner.loading"-->
-                 <!--@mousedown="$event.stopPropagation()"-->
-            <!--&gt;-->
-              <!--<clip-loader-->
-                <!--:loading="loadingSpinner.loading"-->
-                <!--:color="loadingSpinner.color"-->
-                <!--:size="loadingSpinner.size"-->
-              <!--&gt;</clip-loader>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div id="layout-1-2" class="layouts"-->
-               <!--ref="layout1By2"-->
-               <!--v-show="currentLayout.name === '2By2' || currentLayout.name === '3By'"-->
-               <!--:class="{ active: $refs.layout1By2 === focusedCanvas }"-->
-               <!--:style="layout_1_2.style"-->
-               <!--@mousemove="onMouseMove"-->
-               <!--@mousedown.left="mousedownLeft"-->
-               <!--@mousedown.middle="mousedownMiddle"-->
-               <!--@mousedown.right="mousedownRight"-->
-               <!--@mouseup.left="mouseupLeft"-->
-               <!--@mouseup.middle="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseup.right="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseenter="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseleave="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseout="isMouseDown = false, mouseLastPosition = {}"-->
-          <!--&gt;-->
-            <!--<tag-info-->
-              <!--class="tags-info-view"-->
-              <!--v-show="showTags"-->
-              <!--:sliceNum="slice_r1"-->
-              <!--:canvasId="'layout-1-2'"-->
-            <!--&gt;</tag-info>-->
-
-            <!--<div class="loading-spinner-dimmed-view"-->
-                 <!--v-if="loadingSpinner.loading"-->
-                 <!--@mousedown="$event.stopPropagation()"-->
-            <!--&gt;-->
-              <!--<clip-loader :loading="loadingSpinner.loading" :color="loadingSpinner.color"-->
-                           <!--:size="loadingSpinner.size"></clip-loader>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div id="layout-2-1" class="layouts"-->
-               <!--ref="layout2By1"-->
-               <!--v-show="currentLayout.name === '2By2' || currentLayout.name === '3By'"-->
-               <!--:class="{ active: $refs.layout2By1 === focusedCanvas }"-->
-               <!--:style="layout_2_1.style"-->
-               <!--@mousemove="onMouseMove"-->
-               <!--@mousedown.left="mousedownLeft"-->
-               <!--@mousedown.middle="mousedownMiddle"-->
-               <!--@mousedown.right="mousedownRight"-->
-               <!--@mouseup.left="mouseupLeft"-->
-               <!--@mouseup.middle="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseup.right="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseenter="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseleave="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseout="isMouseDown = false, mouseLastPosition = {}"-->
-          <!--&gt;-->
-            <!--<tag-info-->
-              <!--class="tags-info-view"-->
-              <!--v-show="showTags"-->
-              <!--:sliceNum="slice_r2"-->
-            <!--&gt;</tag-info>-->
-
-            <!--<div class="loading-spinner-dimmed-view"-->
-                 <!--v-if="loadingSpinner.loading"-->
-                 <!--@mousedown="$event.stopPropagation()"-->
-            <!--&gt;-->
-              <!--<clip-loader :loading="loadingSpinner.loading" :color="loadingSpinner.color"-->
-                           <!--:size="loadingSpinner.size"></clip-loader>-->
-            <!--</div>-->
-          <!--</div>-->
-
-          <!--<div id="layout-2-2" class="layouts"-->
-               <!--ref="layout2By2"-->
-               <!--v-show="currentLayout.name === '2By2' || currentLayout.name === '3By'"-->
-               <!--:class="{ active: $refs.layout2By2 === focusedCanvas }"-->
-               <!--:style="layout_2_2.style"-->
-               <!--@mousemove="onMouseMove"-->
-               <!--@mousedown.left="mousedownLeft"-->
-               <!--@mousedown.middle="mousedownMiddle"-->
-               <!--@mousedown.right="mousedownRight"-->
-               <!--@mouseup.left="mouseupLeft"-->
-               <!--@mouseup.middle="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseup.right="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseenter="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseleave="isMouseDown = false, mouseLastPosition = {}"-->
-               <!--@mouseout="isMouseDown = false, mouseLastPosition = {}"-->
-          <!--&gt;-->
-            <!--<tag-info-->
-              <!--class="tags-info-view"-->
-              <!--v-show="showTags"-->
-              <!--:sliceNum="slice_r3"-->
-              <!--:canvasId="'layout-2-2'"-->
-            <!--&gt;</tag-info>-->
-
-            <!--<div class="loading-spinner-dimmed-view"-->
-                 <!--v-if="loadingSpinner.loading"-->
-                 <!--@mousedown="$event.stopPropagation()"-->
-            <!--&gt;-->
-              <!--<clip-loader :loading="loadingSpinner.loading" :color="loadingSpinner.color"-->
-                           <!--:size="loadingSpinner.size"></clip-loader>-->
-            <!--</div>-->
-          <!--</div>-->
+          <div id="layout-0-0"
+               style="visibility: hidden">
+          </div>
+          <div id="layout-0-1"
+               style="visibility: hidden">
+          </div>
+          <div id="layout-0-2"
+               style="visibility: hidden">
+          </div>
 
         </div>
       </div>
@@ -206,7 +99,10 @@
   import * as mutationType from '@/store/mutation-types'
   import * as busType from '@/util/bus/bus-types'
 
+  import JSZip from 'jszip'
   import * as Medic3D from '@/lib/medic3d/'
+  import * as Medic3DLeft from '@/lib/medic3d/left.js'
+  import * as Medic3DRight from '@/lib/medic3d/right.js'
 
   import Sidebar from '@/components/layout/Sidebar'
   import ClipLoader from '@/components/lib/ClipLoader'
@@ -235,6 +131,8 @@
     data () {
       return {
         uploadedFile: null,
+        uploadedFileLeft: null,
+        uploadedFileRight: null,
         layoutLeft: {},
         layoutRight: {},
 
@@ -247,7 +145,6 @@
         mousemove_ok: true,
         isMousedown: false,
         dicomfiles: null,
-        r0: {},
         mode: null,
         loadingSpinner: {
           loading: false,
@@ -297,36 +194,68 @@
         console.log(uploadedFile)
         if (uploadedFile.from === 'left') {
           // 왼쪽 파일
+          var temp = uploadedFile.file.name.split('.');
+          this.dicom_name = temp[0];
+          this.$store.commit(mutationType.SET_SHOW_TAGS, false)
+          this.loadingSpinner.loading = true
+//        this.uploadedFile = this.addFileToZip(uploadedFile.file)
+          this.readFileAsArrayBuffer(uploadedFile.file)
+            .then(res => {
+              console.log(res)
+              this.uploadedFileLeft = res
+
+              Medic3DLeft.loadZip(this.uploadedFileLeft, this.eventDispatcher)
+                .then((state) => {
+                  // to need more time for rendering
+//            console.log('Load completed~~~~~~`');
+                  this.loadingSpinner.loading = false
+                  this.$store.commit(mutationType.SET_SHOW_TAGS, true)
+
+                  this.parseDicomTags()
+
+                  // this.setLayoutsSize()
+                })
+                .catch((err) => {
+                  console.log('An error : ' + err);
+                  this.loadingSpinner.loading = false
+                })
+              Medic3DLeft.init();
+              // disable view control
+              Medic3DLeft.CameraCtrl(false);
+            })
         } else if (uploadedFile.from === 'right') {
           // 오른쪽 파일
-        }
-        return
+          var temp = uploadedFile.file.name.split('.');
+          this.dicom_name = temp[0];
+          this.$store.commit(mutationType.SET_SHOW_TAGS, false)
+          this.loadingSpinner.loading = true
+//        this.uploadedFile = this.addFileToZip(uploadedFile.file)
+          this.readFileAsArrayBuffer(uploadedFile.file)
+            .then(res => {
+              console.log(res)
+              this.uploadedFileRight = res
 
-
-//        console.log('setUploadedFile')
-        var temp = uploadedFile.name.split('.');
-        this.dicom_name = temp[0];
-        this.$store.commit(mutationType.SET_SHOW_TAGS, false)
-        this.loadingSpinner.loading = true
-        this.uploadedFile = uploadedFile
-        Medic3D.loadZip(uploadedFile, this.eventDispatcher)
-          .then((state) => {
-            // to need more time for rendering
+              Medic3DRight.loadZip(this.uploadedFileRight, this.eventDispatcher)
+                .then((state) => {
+                  // to need more time for rendering
 //            console.log('Load completed~~~~~~`');
-            this.loadingSpinner.loading = false
-            this.$store.commit(mutationType.SET_SHOW_TAGS, true)
+                  this.loadingSpinner.loading = false
+                  this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
-            this.parseDicomTags()
+                  // this.parseDicomTags()
 
-            this.setLayoutsSize()
-          })
-          .catch((err) => {
-            console.log('An error : ' + err);
-            this.loadingSpinner.loading = false
-          })
-        Medic3D.init();
-        // disable view control
-        Medic3D.CameraCtrl(false);
+                  // this.setLayoutsSize()
+                })
+                .catch((err) => {
+                  console.log('An error : ' + err);
+                  this.loadingSpinner.loading = false
+                })
+              Medic3DRight.init();
+              // disable view control
+              Medic3DRight.CameraCtrl(false);
+            })
+        }
+
       },
       loadSegmentation (uploadFile) {
         this.loadingSpinner.loading = true
@@ -337,6 +266,74 @@
 
         Medic3D.loadSegmentation(uploadFile, true);
         // Todo : assign (slice, segmentation)
+      },
+      readFileAsArrayBuffer (inputFile) {
+        const fileReader = new FileReader()
+        return new Promise((resolve, reject) => {
+          fileReader.onerror = () => {
+            fileReader.abort()
+            reject(new DOMException("Problem parsing input file."));
+          }
+
+          fileReader.onload = () => {
+
+
+            /**
+             * API Test
+             */
+            const formData = new FormData()
+            formData.append('dcm_file', this.uint8ToBase64(fileReader.result))
+            formData.append('filename', inputFile.name)
+            for (var pair of formData.entries()) {
+              console.log(pair[0]+ ', ' + pair[1]);
+            }
+            const url = `https://210.116.109.42:4001/api/predict`
+            fetch(url,
+              { method: 'post', body: formData })
+              .then(res => {
+                console.log(res)
+              })
+              .catch(e => {
+                console.log(e)
+              })
+            /**
+             * ends of API Test
+             */
+
+
+            this.generateFileToZip(fileReader.result, inputFile)
+              .then(res => {
+                resolve(res)
+              })
+              .catch((error) => {
+                console.log('Failed generateFileToZip()')
+                console.log(error)
+              })
+          }
+          fileReader.readAsArrayBuffer(inputFile)
+        })
+      },
+      generateFileToZip (arrayBuffer, file) {
+        const zip = new JSZip()
+        zip.file(file.name, arrayBuffer)
+        return new Promise((resolve, reject) => {
+          zip.generateAsync({type:"blob"})
+            .then((content) => {
+              resolve(content)
+            })
+            .catch((error) => {
+              console.log(error)
+              reject(error)
+            })
+        })
+      },
+      uint8ToBase64(buffer) {
+        var binary = '';
+        var len = buffer.byteLength;
+        for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode(buffer[i]);
+        }
+        return window.btoa( binary );
       },
       initLayouts () {
         this.setLayoutsWithMenuName({name: 'both'});
@@ -426,6 +423,7 @@
         maskCanvas34.style.height = '100%'
       },
       menuClicked (menu) {
+        console.log(menu)
         if (menu.type === 'layout') {
           this.setLayoutsWithMenuName(menu)
         } else if (menu.type === 'select') {
@@ -447,7 +445,7 @@
       onScroll (e) {
 //        console.log('scrolling')
       },
-      onMouseMove (event) {
+      onMouseMove (event, from) {
         // Todo : prohibit event propagation
         this.doAnnotation(event);
         if (this.isMouseDown && this.mousemove_ok) {
@@ -469,9 +467,12 @@
 //              console.log(`Down \ndeltaX : ${deltaX} / deltaY : ${deltaY}`)
             }
 
-            if (this.mode === 'BrightnessContrast') {
-//              console.log('adjust brightnesscontrast');
-              Medic3D.adjustBrightness(deltaX);
+            if (this.mode === 'BrightnessContrast' || this.mode === 'WindowLevel') {
+              if (from === 'left') {
+                Medic3DLeft.adjustBrightness(deltaX)
+              } else if (from === 'right') {
+                Medic3DRight.adjustBrightness(deltaX)
+              }
             }
           }
           this.mouseLastPosition = {
@@ -480,18 +481,15 @@
           }
         }
       },
-      mousedownLeft (e) {
-        console.log('Left Mousedown')
-        if (e.target === this.$refs.layoutLeft) {
-          console.log(e.target)
+      mousedownLeft (e, from) {
+        if (from === 'left') {
           this.isMouseDown = true
-          this.$store.commit(mutationType.SELECT_CANVAS, e.target)
-          this.doAnnotation(event);
-        } else if (e.target === this.$refs.layoutRight) {
-          console.log(e.target)
+          this.$store.commit(mutationType.SELECT_CANVAS, this.$refs.layoutLeft)
+          this.doAnnotation(e);
+        } else if (from === 'right') {
           this.isMouseDown = true
-          this.$store.commit(mutationType.SELECT_CANVAS, e.target)
-          this.doAnnotation(event);
+          this.$store.commit(mutationType.SELECT_CANVAS, this.$refs.layoutRight)
+          this.doAnnotation(e);
         }
         return
       },
@@ -589,14 +587,20 @@
           case 'LoadAnnotation':
 //            console.log('#LoadAnnotation')
             break;
-          case 'Invert':
-//            console.log('#Invert')
-            Medic3D.Invert();
-            break;
-
           /**
            * Selecting display needed.
            */
+          case 'Invert':
+            if (!this.focusedCanvas || !this.focusedCanvas.id) {
+              alert('Please select a Display.')
+              return
+            }
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.Invert()
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.Invert()
+            }
+            break;
           case 'Expand':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
               alert('Please select a Display.')
@@ -622,33 +626,29 @@
               alert('Please select a Display.')
               return
             }
-            if (this.focusedCanvas.id === 'layout-1-1') {
-              alert('Please select a Non-3D Display.')
-              return
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.Horizontal(this.focusedCanvas.id)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.Horizontal(this.focusedCanvas.id)
             }
             console.log('#Horizontal')
             this.$bus.$emit(busType.FLIP_HORIZONTAL)
-            Medic3D.Horizontal(this.focusedCanvas.id);
             break
           case 'Vertical':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
               alert('Please select a Display.')
               return
             }
-            if (this.focusedCanvas.id === 'layout-1-1') {
-              alert('Please select a Non-3D Display.')
-              return
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.Vertical(this.focusedCanvas.id)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.Vertical(this.focusedCanvas.id)
             }
-            Medic3D.Vertical(this.focusedCanvas.id);
             console.log('#Vertical')
             break
           case 'MaskOpacity':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
               alert('Please select a Display.')
-              return
-            }
-            if (this.focusedCanvas.id === 'layout-1-1') {
-              alert('Please select a Non-3D Display.')
               return
             }
             console.log('#MaskOpacity')
@@ -665,39 +665,36 @@
               alert('Please select a Display.')
               return
             }
-            if (this.focusedCanvas.id === 'layout-1-1') {
-              alert('Please select a Non-3D Display.')
-              return
-            }
-//            console.log('#ZoomIn')
             selectId = this.focusedCanvas.id
-            Medic3D.Zoom(selectId, false);
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.Zoom(selectId, false)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.Zoom(selectId, false)
+            }
             break;
           case 'ZoomOut':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
               alert('Please select a Display.')
               return
             }
-            if (this.focusedCanvas.id === 'layout-1-1') {
-              alert('Please select a Non-3D Display.')
-              return
-            }
-//            console.log('#ZoomOut')
             selectId = this.focusedCanvas.id
-            Medic3D.Zoom(selectId, true);
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.Zoom(selectId, true)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.Zoom(selectId, true)
+            }
             break;
           case 'Fit':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
               alert('Please select a Display.')
               return
             }
-            if (this.focusedCanvas.id === 'layout-1-1') {
-              alert('Please select a Non-3D Display.')
-              return
-            }
-//            console.log('#Fit')
             selectId = this.focusedCanvas.id
-            Medic3D.Fit(selectId);
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.Fit(selectId)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.Fit(selectId)
+            }
             break;
           case 'OneToOne':
 //            console.log('#OneToOne')
@@ -709,11 +706,25 @@
       },
       doSelect (menu) {
         this.mode = menu.name;
-        Medic3D.CameraCtrl(false);
+        if (this.uploadedFileLeft) {
+          Medic3DLeft.CameraCtrl(false)
+        }
+        if (this.uploadedFileRight) {
+          Medic3DRight.CameraCtrl(false)
+        }
         switch (menu.name) {
           case 'Pan':
-//            console.log('#Pan')
-            Medic3D.CameraCtrl(true);
+            console.log(this.focusedCanvas)
+            if (!this.focusedCanvas || !this.focusedCanvas.id) {
+              alert('Please select a Display.')
+              return
+            }
+            if (this.uploadedFileLeft) {
+              Medic3DLeft.CameraCtrl(true)
+            }
+            if (this.uploadedFileRight) {
+              Medic3DRight.CameraCtrl(true)
+            }
             break;
           case 'Stack':
 //            console.log('#Stack')
@@ -772,19 +783,27 @@
       },
       doAnnotation (event) {
         let selectId;
-        if (!this.focusedCanvas) {
-          // unselected
-        } else {
-          if (this.focusedCanvas.id === null) {
-            // unselected
-          }
-          selectId = this.focusedCanvas.id;
+        // if (!this.focusedCanvas) {
+        //   // unselected
+        // } else {
+        //   if (this.focusedCanvas.id === null) {
+        //     // unselected
+        //   }
+        //   selectId = this.focusedCanvas.id;
+        // }
+        if (!this.focusedCanvas || !this.focusedCanvas.id) {
+          return
         }
+        selectId = this.focusedCanvas.id
         switch (this.mode) {
           case 'Ruler':
           case 'PolyRuler':
           case 'Protractor':
-            Medic3D.doAnnotation(selectId, this.mode, event);
+            if (this.focusedCanvas.id === 'layout-left') {
+              Medic3DLeft.doAnnotation(selectId, this.mode, event)
+            } else if (this.focusedCanvas.id === 'layout-right') {
+              Medic3DRight.doAnnotation(selectId, this.mode, event)
+            }
             break;
           default:
 //            console.log('Not Annotation mode');
@@ -895,6 +914,9 @@
               imageDimensions: parser.studyDate() || '-',
               voxelDimensions: parser.studyDate() || '-'
             })
+          })
+          .catch(e => {
+            console.log(e)
           })
       },
       setChartImage () {
@@ -1012,9 +1034,19 @@
         if (selectId === 'layout-left') {
           left.style.visibility = 'visible'
           this.setLayoutsWithMenuName({ name: 'left' })
+          this.$nextTick(() => {
+            if (this.uploadedFileLeft) {
+              Medic3DLeft.onWindowResize()
+            }
+          })
         } else if (selectId === 'layout-right') {
           right.style.visibility = 'visible'
           this.setLayoutsWithMenuName({ name: 'right' })
+          this.$nextTick(() => {
+            if (this.uploadedFileRight) {
+              Medic3DRight.onWindowResize()
+            }
+          })
         }
       },
       restoreDisplay () {
@@ -1025,6 +1057,12 @@
           let right = document.getElementById('layout-right')
           left.style.visibility = 'visible'
           right.style.visibility = 'visible'
+          if (this.uploadedFileLeft) {
+            Medic3DLeft.onWindowResize()
+          }
+          if (this.uploadedFileRight) {
+            Medic3DRight.onWindowResize()
+          }
         })
       }
     }
