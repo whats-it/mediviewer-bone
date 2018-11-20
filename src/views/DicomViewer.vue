@@ -21,6 +21,12 @@
                @mouseleave="isMouseDown = false, mouseLastPosition = {}"
                @mouseout="isMouseDown = false, mouseLastPosition = {}"
           >
+            <tag-info
+              class="tags-info-view"
+              :from="'left'"
+              v-show="showLeftTags"
+            ></tag-info>
+
             <div class="loading-spinner-dimmed-view"
                  v-if="loadingSpinner.loading"
                  @mousedown="$event.stopPropagation()"
@@ -49,6 +55,12 @@
                @mouseleave="isMouseDown = false, mouseLastPosition = {}"
                @mouseout="isMouseDown = false, mouseLastPosition = {}"
           >
+            <tag-info
+              class="tags-info-view"
+              :from="'right'"
+              v-show="showRightTags"
+            ></tag-info>
+
             <div class="loading-spinner-dimmed-view"
                  v-if="loadingSpinner.loading"
                  @mousedown="$event.stopPropagation()"
@@ -156,7 +168,9 @@
         slice_r2: 122,    // temporary
         slice_r3: 122,    // temporary
         dicom_name: null,
-        baseURI: 'http://210.116.109.40:3000'
+        baseURI: 'http://210.116.109.40:3000',
+        showLeftTags: false,
+        showRightTags: false
       }
     },
     created () {
@@ -196,7 +210,8 @@
           // 왼쪽 파일
           var temp = uploadedFile.file.name.split('.');
           this.dicom_name = temp[0];
-          this.$store.commit(mutationType.SET_SHOW_TAGS, false)
+          // this.$store.commit(mutationType.SET_SHOW_TAGS, false)
+          this.showLeftTags = false
           this.loadingSpinner.loading = true
 //        this.uploadedFile = this.addFileToZip(uploadedFile.file)
           this.readFileAsArrayBuffer(uploadedFile.file)
@@ -211,7 +226,7 @@
                   this.loadingSpinner.loading = false
                   this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
-                  this.parseDicomTags()
+                  this.parseDicomTags(uploadedFile.from)
 
                   // this.setLayoutsSize()
                 })
@@ -227,7 +242,8 @@
           // 오른쪽 파일
           var temp = uploadedFile.file.name.split('.');
           this.dicom_name = temp[0];
-          this.$store.commit(mutationType.SET_SHOW_TAGS, false)
+          // this.$store.commit(mutationType.SET_SHOW_TAGS, false)
+          this.showRightTags = false
           this.loadingSpinner.loading = true
 //        this.uploadedFile = this.addFileToZip(uploadedFile.file)
           this.readFileAsArrayBuffer(uploadedFile.file)
@@ -242,7 +258,7 @@
                   this.loadingSpinner.loading = false
                   this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
-                  // this.parseDicomTags()
+                  this.parseDicomTags(uploadedFile.from)
 
                   // this.setLayoutsSize()
                 })
@@ -253,6 +269,34 @@
               Medic3DRight.init();
               // disable view control
               Medic3DRight.CameraCtrl(false);
+            })
+        }
+
+
+        /**
+         * API Test
+         */
+        var reader = new FileReader()
+        reader.readAsDataURL(uploadedFile.file)
+        reader.onload = () => {
+          var base64 = reader.result.split(',')[1]
+
+          const formData = new FormData()
+          formData.append('dcm_file', base64)
+          formData.append('filename', uploadedFile.file.name)
+          for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+          }
+          const url = `http://210.116.109.42:4001/api/predict`
+          fetch(url,
+            { method: 'post', body: formData })
+            .then(res => {
+              console.log(res.json())
+              console.log('ends API success')
+            })
+            .catch(e => {
+              console.log(e)
+              console.log('ends API fail')
             })
         }
 
@@ -276,30 +320,6 @@
           }
 
           fileReader.onload = () => {
-
-
-            /**
-             * API Test
-             */
-            const formData = new FormData()
-            formData.append('dcm_file', this.uint8ToBase64(fileReader.result))
-            formData.append('filename', inputFile.name)
-            for (var pair of formData.entries()) {
-              console.log(pair[0]+ ', ' + pair[1]);
-            }
-            const url = `https://210.116.109.42:4001/api/predict`
-            fetch(url,
-              { method: 'post', body: formData })
-              .then(res => {
-                console.log(res)
-              })
-              .catch(e => {
-                console.log(e)
-              })
-            /**
-             * ends of API Test
-             */
-
 
             this.generateFileToZip(fileReader.result, inputFile)
               .then(res => {
@@ -434,6 +454,8 @@
           // reference to /store/modules/menus/index.js가 전체 메뉴. menu.name.*** 형식으로 실제 선택/클릭 확인 가능
           this.$store.commit(mutationType.SELECT_MENU, menu)
           this.doAction(menu);
+        } else if (menu.type === 'toggle') {
+          this.doToggle(menu)
         }
 //        console.log('Focused CANVAS : ')
 //        console.log(this.focusedCanvas)
@@ -628,11 +650,12 @@
             }
             if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
               Medic3DLeft.Horizontal(this.focusedCanvas.id)
+              this.$bus.$emit(busType.FLIP_HORIZONTAL, { from: 'left' })
             } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
               Medic3DRight.Horizontal(this.focusedCanvas.id)
+              this.$bus.$emit(busType.FLIP_HORIZONTAL, { from: 'right' })
             }
             console.log('#Horizontal')
-            this.$bus.$emit(busType.FLIP_HORIZONTAL)
             break
           case 'Vertical':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
@@ -751,8 +774,17 @@
       doToggle (menu) {
         switch (menu.name) {
           case 'ShowTagsToggle':
-//            console.log('#ShowTagsToggle')
-            break;
+            console.log('#ShowTagsToggle')
+            if (!this.focusedCanvas || !this.focusedCanvas.id) {
+              alert('Please select a Display.')
+              return
+            }
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              this.showLeftTags = !this.showLeftTags
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              this.showRightTags = !this.showRightTags
+            }
+            break
         }
       },
       eventDispatcher (event) {
@@ -896,28 +928,55 @@
       setReportState (data) {
         this.$store.commit(mutationType.SET_REPORT, data)
       },
-      parseDicomTags () {
-        Medic3D.parseDicomTags()
-          .then((parser) => {
-            this.$store.commit(mutationType.SET_TAG_INFO, {
-              studyId: parser.studyInstanceUID() || '-',
-              studyDate: parser.studyDate() || '-',
-              patientName: parser.patientName() || '-',
-              patientId: parser.patientID() || '-',
-              patientSex: parser.patientSex() || '-',
-              patientBirthDate: parser.patientBirthdate() || '-',
-              fieldStrength: parser.studyDate() || '-',
-              scanningSequence: parser.studyDate() || '-',
-              repetitionTime: parser.studyDate() || '-',
-              echoTime: parser.studyDate() || '-',
-              flipAngle: parser.studyDate() || '-',
-              imageDimensions: parser.studyDate() || '-',
-              voxelDimensions: parser.studyDate() || '-'
+      parseDicomTags (from) {
+        if (from === 'left') {
+          Medic3DLeft.parseDicomTags()
+            .then((parser) => {
+              this.$store.commit(mutationType.SET_TAG_LEFT_INFO, {
+                studyId: parser.studyInstanceUID() || '-',
+                studyDate: parser.studyDate() || '-',
+                patientName: parser.patientName() || '-',
+                patientId: parser.patientID() || '-',
+                patientSex: parser.patientSex() || '-',
+                patientBirthDate: parser.patientBirthdate() || '-',
+                fieldStrength: '-',
+                scanningSequence: '-',
+                repetitionTime: '-',
+                echoTime: '-',
+                flipAngle: '-',
+                imageDimensions: '-',
+                voxelDimensions: '-'
+              })
+              this.showLeftTags = true
             })
-          })
-          .catch(e => {
-            console.log(e)
-          })
+            .catch(e => {
+              console.log(e)
+            })
+        } else if (from === 'right') {
+          Medic3DRight.parseDicomTags()
+            .then((parser) => {
+              this.$store.commit(mutationType.SET_TAG_RIGHT_INFO, {
+                studyId: parser.studyInstanceUID() || '-',
+                studyDate: parser.studyDate() || '-',
+                patientName: parser.patientName() || '-',
+                patientId: parser.patientID() || '-',
+                patientSex: parser.patientSex() || '-',
+                patientBirthDate: parser.patientBirthdate() || '-',
+                fieldStrength: '-',
+                scanningSequence: '-',
+                repetitionTime: '-',
+                echoTime: '-',
+                flipAngle: '-',
+                imageDimensions: '-',
+                voxelDimensions: '-'
+              })
+              this.showRightTags = true
+            })
+            .catch(e => {
+              console.log(e)
+            })
+        }
+
       },
       setChartImage () {
         var reports = [];

@@ -20,6 +20,8 @@ const state = {
   currentSelect: {},
   showTags: false,
   tagInfo: {},
+  tagLeftInfo: {},
+  tagRightInfo: {},
   showAnalysisReportPopup: false,
   capturedImage: {
     layout1: null,
@@ -34,6 +36,8 @@ const state = {
 const getters = {
   focusedCanvas: state => state.focusedCanvas,
   tagInfo: state => state.tagInfo,
+  tagLeftInfo: state => state.tagLeftInfo,
+  tagRightInfo: state => state.tagRightInfo,
   showAnalysisReportPopup: state => state.showAnalysisReportPopup,
   capturedImage: state => state.capturedImage,
   chartReports: state => state.chartReports,

@@ -1,54 +1,61 @@
 <template>
-  <div v-if="tagInfo">
+  <div v-if="from === 'left'">
     <div class="tags-left-top">
-      <span>Study ID : {{ tagInfo.studyId }}</span><br>
-      <span>Study date : {{ tagInfo.studyDate }}</span><br>
-      <span>Patient's name : {{ tagInfo.patientName }}</span><br>
-      <span>Patient ID : {{ tagInfo.patientId }}</span><br>
-      <span>Patient sex : {{ tagInfo.patientSex }}</span><br>
-      <span>Patient's birth date : {{ tagInfo.patientBirthDate }}</span><br>
+      <span>Study ID : {{ tagLeftInfo.studyId }}</span><br>
+      <span>Study date : {{ tagLeftInfo.studyDate }}</span><br>
+      <span>Patient's name : {{ tagLeftInfo.patientName }}</span><br>
+      <span>Patient ID : {{ tagLeftInfo.patientId }}</span><br>
+      <span>Patient sex : {{ tagLeftInfo.patientSex }}</span><br>
+      <span>Patient's birth date : {{ tagLeftInfo.patientBirthDate }}</span><br>
     </div>
     <div class="tags-right-top">
-      <span>Field strength : {{ tagInfo.fieldStrength }}</span><br>
-      <span>Scanning sequence : {{ tagInfo.scanningSequence }}</span><br>
-      <span>TR : {{ tagInfo.repetitionTime }}</span><br>
-      <span>TE : {{ tagInfo.echoTime }}</span><br>
-      <span>Flip angle : {{ tagInfo.flipAngle }}</span><br>
-      <span>Image dimensions (Y, Z, X) : </span><br><span>{{ tagInfo.imageDimensions }}</span><br>
-      <span>Voxel dimensions (Y, Z, X) : </span><br><span>{{ tagInfo.voxelDimensions }}</span><br>
+      <span>Field strength : {{ tagLeftInfo.fieldStrength }}</span><br>
+      <span>Scanning sequence : {{ tagLeftInfo.scanningSequence }}</span><br>
+      <span>TR : {{ tagLeftInfo.repetitionTime }}</span><br>
+      <span>TE : {{ tagLeftInfo.echoTime }}</span><br>
+      <span>Flip angle : {{ tagLeftInfo.flipAngle }}</span><br>
+      <span>Image dimensions (Y, Z, X) : </span><br><span>{{ tagLeftInfo.imageDimensions }}</span><br>
+      <span>Voxel dimensions (Y, Z, X) : </span><br><span>{{ tagLeftInfo.voxelDimensions }}</span><br>
     </div>
-    <div class="tags-bottom">
-      <div class="tags-bottom-inner"
-           v-if="sliceNum">
-        {{sliceNum}}/256
+    <div class="left-bottom">
+      <div class="left-bottom-inner">
+        {{ leftFlip ? left : right }}
       </div>
     </div>
-    <template v-if="canvasId">
-      <template v-if="canvasId === 'layout-1-2' || canvasId === 'layout-2-2'">
-        <div class="left-bottom">
-          <div class="left-bottom-inner"
-               v-if="sliceNum">
-            <template v-if="flip === true">
-              {{ left }}
-            </template>
-            <template v-else-if="flip === false">
-              {{ right }}
-            </template>
-          </div>
-        </div>
-        <div class="right-bottom">
-          <div class="right-bottom-inner"
-               v-if="sliceNum">
-            <template v-if="flip === true">
-              {{ right }}
-            </template>
-            <template v-else-if="flip === false">
-              {{ left }}
-            </template>
-          </div>
-        </div>
-      </template>
-    </template>
+    <div class="right-bottom">
+      <div class="right-bottom-inner">
+        {{ leftFlip ? right : left }}
+      </div>
+    </div>
+  </div>
+  <div v-else-if="from === 'right'">
+    <div class="tags-left-top">
+      <span>Study ID : {{ tagRightInfo.studyId }}</span><br>
+      <span>Study date : {{ tagRightInfo.studyDate }}</span><br>
+      <span>Patient's name : {{ tagRightInfo.patientName }}</span><br>
+      <span>Patient ID : {{ tagRightInfo.patientId }}</span><br>
+      <span>Patient sex : {{ tagRightInfo.patientSex }}</span><br>
+      <span>Patient's birth date : {{ tagRightInfo.patientBirthDate }}</span><br>
+    </div>
+    <div class="tags-right-top">
+      <span>Field strength : {{ tagRightInfo.fieldStrength }}</span><br>
+      <span>Scanning sequence : {{ tagRightInfo.scanningSequence }}</span><br>
+      <span>TR : {{ tagRightInfo.repetitionTime }}</span><br>
+      <span>TE : {{ tagRightInfo.echoTime }}</span><br>
+      <span>Flip angle : {{ tagRightInfo.flipAngle }}</span><br>
+      <span>Image dimensions (Y, Z, X) : </span><br><span>{{ tagRightInfo.imageDimensions }}</span><br>
+      <span>Voxel dimensions (Y, Z, X) : </span><br><span>{{ tagRightInfo.voxelDimensions }}</span><br>
+    </div>
+    <div class="left-bottom">
+      <div class="left-bottom-inner">
+        {{ rightFlip ? left : right }}
+      </div>
+    </div>
+    <div class="right-bottom">
+      <div class="right-bottom-inner">
+        {{ rightFlip ? right : left }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -61,36 +68,38 @@
   export default {
     name: 'TagInfo',
     props: {
-      sliceNum: {
-        type: Number,
-        default: null
-      },
-      canvasId: {
+      from: {
         type: String,
         default: null
       }
     },
     computed: {
       ...mapGetters([
-        'tagInfo',
+        'tagLeftInfo',
+        'tagRightInfo',
         'focusedCanvas'
       ])
     },
     data () {
       return {
-        flip: true,
+        leftFlip: true,
+        rightFlip: true,
         left: 'L',
         right: 'R'
       }
     },
     created () {
-      this.$bus.$on(busType.FILE_UPLOADED, this.dicomFileUploaded)
+      // this.$bus.$on(busType.FILE_UPLOADED, this.dicomFileUploaded)
       this.$bus.$on(busType.FLIP_HORIZONTAL, this.flipHorizontal)
       this.$bus.$on(busType.RESET_TAG_INFO, this.resetTagInfo)
     },
     methods: {
-      resetTagInfo () {
-        this.flip = true
+      resetTagInfo (data) {
+        if (data.from === 'left') {
+          this.leftFlip = true
+        } else if (data.from === 'right') {
+          this.rightFlip = true
+        }
       },
       dicomFileUploaded (dicomFile) {
 //        switch (dicomFile.name) {
@@ -113,11 +122,11 @@
 //            break;
 //        }
       },
-      flipHorizontal () {
-        console.log(this.canvasId)
-        console.log(this.flip)
-        if (this.canvasId === this.focusedCanvas.id) {
-          this.flip = !this.flip
+      flipHorizontal (data) {
+        if (data.from === 'left') {
+          this.leftFlip = !this.leftFlip
+        } else if (data.from === 'right') {
+          this.rightFlip = !this.rightFlip
         }
       }
     }

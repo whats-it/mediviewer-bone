@@ -2426,7 +2426,7 @@ export function parseDicomTags () {
   return new Promise((resolve, reject) => {
     if (aDicomRawData) {
       let ParsersDicom = Medic3D.Parsers.Dicom
-      resolve(new ParsersDicom(aDicomRawData, 'dicom_parse_id_01'))
+      resolve(new ParsersDicom(aDicomRawData, 'BH_'+new Date().getTime()))
     } else {
       reject(new Error('Dicom file not found.'))
     }

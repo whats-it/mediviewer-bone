@@ -105,12 +105,14 @@
         console.log('fileUploaded')
         this.$store.commit(mutationType.SELECT_MENU, null)
         this.$store.commit(mutationType.SELECT_CANVAS, null)
+        this.$bus.$emit(busType.RESET_TAG_INFO, { from: 'left' })
         this.$bus.$emit(busType.FILE_UPLOADED, { file: this.files[0], from: 'left' })
       },
       fileUploaded2 () {
         console.log('fileUploaded2')
         this.$store.commit(mutationType.SELECT_MENU, null)
         this.$store.commit(mutationType.SELECT_CANVAS, null)
+        this.$bus.$emit(busType.RESET_TAG_INFO, { from: 'right' })
         this.$bus.$emit(busType.FILE_UPLOADED, { file: this.files2[0], from: 'right' })
       }
     }

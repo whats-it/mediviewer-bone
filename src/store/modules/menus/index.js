@@ -150,7 +150,7 @@ const state = {
       type: 'toggle',
       toggle: true,
       meta: {
-        label: 'Hide Tags',
+        label: 'Show / Hide Tags',
         icon: 'img-over-16-hide-tags.svg'
       }
     }

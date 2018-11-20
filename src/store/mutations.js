@@ -38,6 +38,12 @@ export default {
   SET_TAG_INFO (state, tagInfo) {
     state.tagInfo = tagInfo
   },
+  SET_TAG_LEFT_INFO (state, tagInfo) {
+    state.tagLeftInfo = tagInfo
+  },
+  SET_TAG_RIGHT_INFO (state, tagInfo) {
+    state.tagRightInfo = tagInfo
+  },
   SET_MASK_OPACITY (state, opacity) {
     if (opacity < 0) {
       state.maskOpacity = 0

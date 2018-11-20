@@ -165,9 +165,9 @@
 //          case 'OpenSegmentations':
 //            this.openSegmentations()
 //            break
-          case 'ShowTagsToggle':
-            this.toggleShowTags(menu)
-            break
+//           case 'ShowTagsToggle':
+//             this.toggleShowTags(menu)
+//             break
           default :
             this.$bus.$emit(busType.MENU_CLICKED, menu)
             break
