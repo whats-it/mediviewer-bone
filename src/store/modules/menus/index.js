@@ -19,7 +19,7 @@ const state = {
       name: 'BrainRoiSegmentation',
       type: 'action',
       meta: {
-        label: 'Brain ROI Segmentation',
+        label: 'Image Analysis',
         icon: 'img-over-01-brain-roi-segmentation.svg'
       }
     },
