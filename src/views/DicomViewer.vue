@@ -832,6 +832,7 @@
         /**
          * API Test
          */
+        this.loadingSpinner.loading = true
         var reader = new FileReader()
         reader.readAsDataURL(requestFile)
         reader.onload = () => {
@@ -850,26 +851,29 @@
               if (res.ok) {
                 res.json()
                   .then(data => {
-                    console.log(`From: ${from}`)
                     console.log(data)
                     if (from === 'left') {
                       this.analysisResultLeft = data
                     } else if (from === 'right') {
                       this.analysisResultRight = data
                     }
+                    this.loadingSpinner.loading = false
                   })
                   .catch(e => {
                     console.log(e)
                     alert('Error: /api/predict API res.json()')
+                    this.loadingSpinner.loading = false
                   })
               } else {
                 console.log(res.status)
                 alert('Error: /api/predict API')
+                this.loadingSpinner.loading = false
               }
             })
             .catch(e => {
               console.log(e)
               alert('Error: /api/predict API')
+              this.loadingSpinner.loading = false
             })
         }
       },
