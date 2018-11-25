@@ -147,6 +147,8 @@
         uploadedFileRight: null,
         layoutLeft: {},
         layoutRight: {},
+        analysisResultLeft: null,
+        analysisResultRight: null,
 
         layout_1_1: {},
         layout_1_2: {},
@@ -168,7 +170,7 @@
         slice_r2: 122,    // temporary
         slice_r3: 122,    // temporary
         dicom_name: null,
-        baseURI: 'http://210.116.109.40:3000',
+        baseURI: 'http://210.116.109.42:4001',
         showLeftTags: false,
         showRightTags: false
       }
@@ -206,6 +208,9 @@
       },
       setUploadedFile (uploadedFile) {
         console.log(uploadedFile)
+        /**
+         * RESET seg, seg_result popup here
+         */
         if (uploadedFile.from === 'left') {
           // 왼쪽 파일
           var temp = uploadedFile.file.name.split('.');
@@ -213,13 +218,12 @@
           // this.$store.commit(mutationType.SET_SHOW_TAGS, false)
           this.showLeftTags = false
           this.loadingSpinner.loading = true
-//        this.uploadedFile = this.addFileToZip(uploadedFile.file)
+          this.uploadedFileLeft = uploadedFile.file
           this.readFileAsArrayBuffer(uploadedFile.file)
             .then(res => {
               console.log(res)
-              this.uploadedFileLeft = res
 
-              Medic3DLeft.loadZip(this.uploadedFileLeft, this.eventDispatcher)
+              Medic3DLeft.loadZip(res, this.eventDispatcher)
                 .then((state) => {
                   // to need more time for rendering
 //            console.log('Load completed~~~~~~`');
@@ -245,13 +249,12 @@
           // this.$store.commit(mutationType.SET_SHOW_TAGS, false)
           this.showRightTags = false
           this.loadingSpinner.loading = true
-//        this.uploadedFile = this.addFileToZip(uploadedFile.file)
+          this.uploadedFileRight = uploadedFile.file
           this.readFileAsArrayBuffer(uploadedFile.file)
             .then(res => {
               console.log(res)
-              this.uploadedFileRight = res
 
-              Medic3DRight.loadZip(this.uploadedFileRight, this.eventDispatcher)
+              Medic3DRight.loadZip(res, this.eventDispatcher)
                 .then((state) => {
                   // to need more time for rendering
 //            console.log('Load completed~~~~~~`');
@@ -271,35 +274,6 @@
               Medic3DRight.CameraCtrl(false);
             })
         }
-
-
-        /**
-         * API Test
-         */
-        var reader = new FileReader()
-        reader.readAsDataURL(uploadedFile.file)
-        reader.onload = () => {
-          var base64 = reader.result.split(',')[1]
-
-          const formData = new FormData()
-          formData.append('dcm_file', base64)
-          formData.append('filename', uploadedFile.file.name)
-          for (var pair of formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]);
-          }
-          const url = `http://210.116.109.42:4001/api/predict`
-          fetch(url,
-            { method: 'post', body: formData })
-            .then(res => {
-              console.log(res.json())
-              console.log('ends API success')
-            })
-            .catch(e => {
-              console.log(e)
-              console.log('ends API fail')
-            })
-        }
-
       },
       loadSegmentation (uploadFile) {
         this.loadingSpinner.loading = true
@@ -548,34 +522,41 @@
         let fileName = null
         switch (menu.name) {
 
-          case 'BrainRoiSegmentation':
+          case 'BrainRoiSegmentation': // (== Image Analysis)
 //            console.log('#BrainRoiSegmentation')
-            console.log(`baseURI: ${this.baseURI}`)
-            fileName = null
-            if (this.dicom_name) {
-              fileName = this.dicom_name
-            }
-            if (!fileName) {
-              alert('Error: No input Dicom file.')
-              return
-            }
-            console.log(fileName)
-            this.fetchBrainRoiSegmentation(fileName)
-            break;
-          case 'SegmentationResultOveray':
-//            console.log('#SegmentationResultOveray')
-            if (!Medic3D.getReports() || Medic3D.getReports().length === 0) {
-              alert('Error: No segmentation data.')
-              return
-            }
-            break;
+            this.fetchImageAnalysis()
+            break
           case 'AnalysisReport':
-            if (!this.dicom_name) {
-              alert('Error: No dicom data.')
+            if (!this.focusedCanvas || !this.focusedCanvas.id) {
+              alert('Please select a Display to analysis.')
               return
             }
-            console.log(`fileid = ${this.dicom_name}.nii`)
-            window.open(`${this.baseURI}/report?fileid=${this.dicom_name}.nii`)
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              if (!this.analysisResultLeft) {
+                alert('No segmentation data.')
+                return
+              }
+              this.$store.commit(mutationType.SET_ANALYSIS_REPORT, this.analysisResultLeft)
+              this.showAnalysisReportPopupToggle(true)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              if (!this.analysisResultRight) {
+                alert('No segmentation data.')
+                return
+              }
+              this.$store.commit(mutationType.SET_ANALYSIS_REPORT, this.analysisResultRight)
+              this.showAnalysisReportPopupToggle(true)
+            } else {
+              alert('Dicom file not found.')
+              return
+            }
+
+
+            // if (!this.dicom_name) {
+            //   alert('Error: No dicom data.')
+            //   return
+            // }
+            // console.log(`fileid = ${this.dicom_name}.nii`)
+            // window.open(`${this.baseURI}/report?fileid=${this.dicom_name}.nii`)
 //            if (!this.showAnalysisReportPopup) {
 //              if (!Medic3D.getReports() || Medic3D.getReports().length === 0) {
 //                alert('Error: No segmentation data.')
@@ -588,18 +569,8 @@
             break;
           case 'OpenSegmentations':
 //            console.log('#OpenSegmentations')
-            console.log(`baseURI: ${this.baseURI}`)
-            fileName = null
-            if (this.dicom_name) {
-              fileName = this.dicom_name
-            }
-            if (!fileName) {
-              alert('Error: No input Dicom file.')
-              return
-            }
-            console.log(fileName)
-            this.fetchOpenSegmentations(fileName)
-            break;
+            this.fetchImageAnalysis()
+            break
           case 'SaveAsDerived':
 //            console.log('#SaveAsDerived')
             break;
@@ -839,6 +810,67 @@
             break;
           default:
 //            console.log('Not Annotation mode');
+        }
+      },
+      fetchImageAnalysis() {
+        if (!this.focusedCanvas || !this.focusedCanvas.id) {
+          alert('Please select a Display to analysis.')
+          return
+        }
+        let requestFile
+        let from
+        if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+          requestFile = this.uploadedFileLeft
+          from = 'left'
+        } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+          requestFile = this.uploadedFileRight
+          from = 'right'
+        } else {
+          alert('Dicom file not found.')
+          return
+        }
+        /**
+         * API Test
+         */
+        var reader = new FileReader()
+        reader.readAsDataURL(requestFile)
+        reader.onload = () => {
+          var base64 = reader.result.split(',')[1]
+
+          const formData = new FormData()
+          formData.append('dcm_file', base64)
+          formData.append('filename', requestFile.name)
+          // for (var pair of formData.entries()) {
+          //   console.log(pair[0]+ ', ' + pair[1]);
+          // }
+          const url = `${this.baseURI}/api/predict`
+          fetch(url,
+            { method: 'post', body: formData })
+            .then(res => {
+              if (res.ok) {
+                res.json()
+                  .then(data => {
+                    console.log(`From: ${from}`)
+                    console.log(data)
+                    if (from === 'left') {
+                      this.analysisResultLeft = data
+                    } else if (from === 'right') {
+                      this.analysisResultRight = data
+                    }
+                  })
+                  .catch(e => {
+                    console.log(e)
+                    alert('Error: /api/predict API res.json()')
+                  })
+              } else {
+                console.log(res.status)
+                alert('Error: /api/predict API')
+              }
+            })
+            .catch(e => {
+              console.log(e)
+              alert('Error: /api/predict API')
+            })
         }
       },
       fetchBrainRoiSegmentation (fileName) {

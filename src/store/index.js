@@ -28,7 +28,7 @@ const state = {
     layout2: null,
     layout3: null
   },
-  chartReports: [],
+  analysisReport: null,
   report: {},
   maskOpacity: 100
 }
@@ -40,7 +40,7 @@ const getters = {
   tagRightInfo: state => state.tagRightInfo,
   showAnalysisReportPopup: state => state.showAnalysisReportPopup,
   capturedImage: state => state.capturedImage,
-  chartReports: state => state.chartReports,
+  analysisReport: state => state.analysisReport,
   report: state => state.report,
   maskOpacity: state => state.maskOpacity
 }

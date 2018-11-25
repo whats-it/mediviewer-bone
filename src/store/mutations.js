@@ -28,9 +28,8 @@ export default {
   SET_CAPTURED_IMAGE (state, capturedImage) {
     state.capturedImage = capturedImage
   },
-  SET_CHART_REPORTS (state, chartReports) {
-    state.chartReports = []
-    state.chartReports = chartReports
+  SET_ANALYSIS_REPORT (state, analysisReport) {
+    state.analysisReport = analysisReport
   },
   SET_REPORT (state, report) {
     state.report = report

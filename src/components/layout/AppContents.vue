@@ -30,11 +30,11 @@
   export default {
     name: 'AppContents',
     computed: {
-      ...mapGetters({
-        menus: 'menus',
-        showAnalysisReportPopup: 'showAnalysisReportPopup',
-        focusedCanvas: 'focusedCanvas'
-      })
+      ...mapGetters([
+        'menus',
+        'showAnalysisReportPopup',
+        'focusedCanvas'
+      ])
     },
     data () {
       return {
@@ -129,7 +129,8 @@
     },
     methods: {
       ...mapActions([
-        'showTagsToggle'
+        'showTagsToggle',
+        'showAnalysisReportPopupToggle'
       ]),
       showSegmentationPopupToggle (show) {
         if (show) {
@@ -138,13 +139,13 @@
         }
         this.showSegmentationPopup = !this.showSegmentationPopup
       },
-      showAnalysisReportPopupToggle (show) {
-        if (show) {
-          this.showAnalysisReportPopup = show
-          return
-        }
-        this.showAnalysisReportPopup = !this.showAnalysisReportPopup
-      },
+      // showAnalysisReportPopupToggle (show) {
+      //   if (show) {
+      //     this.showAnalysisReportPopup = show
+      //     return
+      //   }
+      //   this.showAnalysisReportPopup = !this.showAnalysisReportPopup
+      // },
       showMaskOpacityPopupToggle (show) {
         this.showMaskOpacityPopup = show
 //        if (show) {
