@@ -231,6 +231,7 @@
                   this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
                   this.parseDicomTags(uploadedFile.from)
+                  Medic3DLeft.Horizontal('layout-left')
 
                   // this.setLayoutsSize()
                 })
@@ -262,6 +263,7 @@
                   this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
                   this.parseDicomTags(uploadedFile.from)
+                  Medic3DRight.Horizontal('layout-right')
 
                   // this.setLayoutsSize()
                 })
