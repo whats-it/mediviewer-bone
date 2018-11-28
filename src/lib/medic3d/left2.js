@@ -2,10 +2,10 @@ import JSZIP from 'jszip';
 // import * as THREE from 'three';
 // import Medic3D from '../../../../Medic3D/dist/medic3d'
 // for release
-import Medic3D from '../../../static/lib/Medic3D/right/medic3d'
+import Medic3D from '../../../static/lib/Medic3D/left/medic3d'
 import Request from 'request';
-import * as THREE from '../../../static/lib/Medic3D/right/three.min';
-import dat from '../../../static/lib/Medic3D/right/dat.gui.min';
+import * as THREE from '../../../static/lib/Medic3D/left/three.min';
+import dat from '../../../static/lib/Medic3D/left/dat.gui.min';
 var PNG = require('pngjs').PNG;
 
 
@@ -101,11 +101,11 @@ void main()
 
 // 3d renderer
 const r0 = {
-  domId: 'layout-0-0',
+  domId: 'layout-1-0',
   domElement: null,
   renderer: null,
   color: 0x212121,
-  targetID: 100,
+  targetID: 0,
   camera: null,
   controls: null,
   scene: null,
@@ -115,13 +115,13 @@ const r0 = {
 
 // 2d axial renderer
 const r1 = {
-  domId: 'layout-right',
+  domId: 'layout-left',
   domElement: null,
   renderer: null,
   color: 0x121212,
   sliceOrientation: 'axial',
   sliceColor: 0xFF1744,
-  targetID: 101,
+  targetID: 1,
   camera: null,
   controls: null,
   scene: null,
@@ -129,19 +129,19 @@ const r1 = {
   stackHelper: null,
   localizerHelper: null,
   localizerScene: null,
-  name: 'r10',
+  name: 'r1',
   offset: null
 };
 
 // 2d sagittal renderer
 const r2 = {
-  domId: 'layout-0-1',
+  domId: 'layout-1-1',
   domElement: null,
   renderer: null,
   color: 0x121212,
   sliceOrientation: 'sagittal',
   sliceColor: 0xFFEA00,
-  targetID: 102,
+  targetID: 2,
   camera: null,
   controls: null,
   scene: null,
@@ -149,19 +149,19 @@ const r2 = {
   stackHelper: null,
   localizerHelper: null,
   localizerScene: null,
-  name: 'r20',
+  name: 'r2',
   offset: null
 };
 
 // 2d coronal renderer
 const r3 = {
-  domId: 'layout-0-2',
+  domId: 'layout-1-2',
   domElement: null,
   renderer: null,
   color: 0x121212,
   sliceOrientation: 'coronal',
   sliceColor: 0x76FF03,
-  targetID: 103,
+  targetID: 3,
   camera: null,
   controls: null,
   scene: null,
@@ -169,7 +169,7 @@ const r3 = {
   stackHelper: null,
   localizerHelper: null,
   localizerScene: null,
-  name: 'r30',
+  name: 'r3',
   offset: null
 };
 
@@ -233,7 +233,7 @@ const segR1 = {
 const segR11 = {
   domId: r1.domId,
   domElement: null,
-  targetID: 110,
+  targetID: 11,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -259,7 +259,7 @@ const segR11 = {
 const segR12 = {
   domId: r1.domId,
   domElement: null,
-  targetID: 120,
+  targetID: 12,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -286,7 +286,7 @@ const segR12 = {
 const segR13 = {
   domId: r1.domId,
   domElement: null,
-  targetID: 130,
+  targetID: 13,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -313,7 +313,7 @@ const segR13 = {
 const segR14 = {
   domId: r1.domId,
   domElement: null,
-  targetID: 140,
+  targetID: 14,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -339,7 +339,7 @@ const segR14 = {
 const segR21 = {
   domId: r2.domId,
   domElement: null,
-  targetID: 210,
+  targetID: 21,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -365,7 +365,7 @@ const segR21 = {
 const segR22 = {
   domId: r2.domId,
   domElement: null,
-  targetID: 220,
+  targetID: 22,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -392,7 +392,7 @@ const segR22 = {
 const segR23 = {
   domId: r2.domId,
   domElement: null,
-  targetID: 230,
+  targetID: 23,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -419,7 +419,7 @@ const segR23 = {
 const segR24 = {
   domId: r2.domId,
   domElement: null,
-  targetID: 240,
+  targetID: 24,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -445,7 +445,7 @@ const segR24 = {
 const segR31 = {
   domId: r3.domId,
   domElement: null,
-  targetID: 310,
+  targetID: 31,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -471,7 +471,7 @@ const segR31 = {
 const segR32 = {
   domId: r3.domId,
   domElement: null,
-  targetID: 320,
+  targetID: 32,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -498,7 +498,7 @@ const segR32 = {
 const segR33 = {
   domId: r3.domId,
   domElement: null,
-  targetID: 330,
+  targetID: 33,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -525,7 +525,7 @@ const segR33 = {
 const segR34 = {
   domId: r3.domId,
   domElement: null,
-  targetID: 340,
+  targetID: 34,
   gui: null,
   guiParam : {},
   spaceLength : {
@@ -582,6 +582,7 @@ export function init () {
       // r3.controls.update();
 
       if (shouldShowSegmentation) {
+        segR1.controls.update();
         // segR11.controls.update();
         // segR12.controls.update();
         // segR13.controls.update();
@@ -606,6 +607,7 @@ export function init () {
       // renderDo(r2);
       // renderDo(r3);
       if (shouldShowSegmentation) {
+        renderSeg(segR1);
         // renderSeg(segR11);
         // renderSeg(segR12);
         // renderSeg(segR13);
@@ -656,7 +658,8 @@ export function init () {
     // clearThree(r2.scene);
     // clearThree(r3.scene);
 
-    // if (shouldShowSegmentation) {
+    if (shouldShowSegmentation) {
+      clearThree(segR1.scene);
     //   clearThree(segR11.scene);
     //   clearThree(segR12.scene);
     //   clearThree(segR13.scene);
@@ -671,7 +674,7 @@ export function init () {
     //   clearThree(segR32.scene);
     //   clearThree(segR33.scene);
     //   clearThree(segR34.scene);
-    // }
+    }
   } else {
     // console.log('First time');
   }
@@ -680,7 +683,10 @@ export function init () {
   // initRenderer2D(r2);
   initRenderer2D(r1);
 
-  // if (shouldShowSegmentation) {
+  initSegment(segR1);
+
+  if (shouldShowSegmentation) {
+    initSegment(segR1);
   //   initSegment(segR11);
   //   initSegment(segR12);
   //   initSegment(segR13);
@@ -695,7 +701,7 @@ export function init () {
   //   initSegment(segR32);
   //   initSegment(segR33);
   //   initSegment(segR34);
-  // }
+  }
 
   // initGui();    // TODO : initGui(rendererObj)
   // start rendering loop
@@ -833,7 +839,9 @@ export function loadZip (uploadedFile, cb) {
       .then(function (buffer) {
         // console.log('Extracted zip files is read');
         let LoadersVolume = Medic3D.Loaders.Volume    // export default { Volume }
+        console.log(LoadersVolume)
         let loader = new LoadersVolume()
+        console.log(loader)
         loader.loadZip(buffer)  //
           .then(function () {
 
@@ -936,6 +944,7 @@ export function loadZip (uploadedFile, cb) {
             // r2.camera.rotate();
             // r3.camera.rotate();
             // r3.camera.rotate();
+
             resolve(true);
           })
       })
@@ -1025,6 +1034,8 @@ function extractZip (zip, type, sort) {
 
   return Promise.all(loadData)
     .then(function (rawdata) {
+      console.log('for Dicom Tag parsing')
+      console.log(rawdata)
       // for Dicom Tag parsing
       aDicomRawData = rawdata[0]
 
@@ -1145,6 +1156,75 @@ export function loadSegmentation_org (uploadedFile) {
     });
 }
 
+export function loadSegmentationBone (buffer) {
+  return new Promise((resolve, reject) => {
+    new PNG({filterType: -1}).parse(buffer, function (error, data) {
+      if (error) {
+        console.log('Error : ' + error)
+        reject(error)
+      }
+      // console.log('loaded png' + data)
+      segR1.texture = data
+
+      var stack = getDicomStack()
+      if (stack !== null) {
+        shouldShowSegmentation = true
+        initScreen(segR1);
+        initSegRender(r1.domId)
+
+        adjustR1Orientation()
+
+        resolve(true)
+      }
+      // resolve(data);
+    })
+  })
+}
+
+export function loadSegmentationBone2 (file) {
+  return new Promise((resolve, reject) => {
+    console.log(file)
+    const fileReader = new FileReader()
+    fileReader.onerror = () => {
+      fileReader.abort()
+      reject(new DOMException("Problem parsing segmentation file."));
+    }
+    fileReader.onload = () => {
+      console.log(fileReader.result)
+      loadZipPng(fileReader.result)
+        .then(data => {
+          console.log(data)
+        })
+
+      // JSZIP.loadAsync(fileReader.result)
+      //   .then(function (zip) {
+      //     console.log(zip)
+      //     return extractReportZip(zip, 'arraybuffer', true);
+      //   })
+      //   .then(function (buffer) {
+      //     console.log(buffer)
+      //     return loadZipPngs(buffer)
+      //   })
+      //   .then(function (data) {
+      //     console.log(data)
+      //     segR11.texture = data[0];
+      //
+      //     var stack = getDicomStack();
+      //     if (stack !== null) {
+      //       shouldShowSegmentation = true;
+      //       initScreen(segR1);
+      //       initSegRender(r1.domId);
+      //
+      //       adjustR1Orientation()
+      //
+      //       resolve(true);
+      //     }
+      //   });
+    }
+    fileReader.readAsArrayBuffer(file)
+  })
+}
+
 export function loadSegmentationLocal (segUrl, fileName) {
   return new Promise((resolve, reject) => {
     Request({
@@ -1189,40 +1269,42 @@ export function loadSegmentationLocal (segUrl, fileName) {
           var stack = getDicomStack();
           if (stack !== null) {
             shouldShowSegmentation = true;
-
-            initScreen(segR11, fileName);
-            initScreen(segR12, fileName);
-            initScreen(segR13, fileName);
-            initScreen(segR14, fileName);
-
-            initScreen(segR21, fileName);
-            initScreen(segR22, fileName);
-            initScreen(segR23, fileName);
-            initScreen(segR24, fileName);
-
-            initScreen(segR31, fileName);
-            initScreen(segR32, fileName);
-            initScreen(segR33, fileName);
-            initScreen(segR34, fileName);
-
-            combineMprSeg(r0, segR11, stack);
-            combineMprSeg(r0, segR12, stack);
-            combineMprSeg(r0, segR13, stack);
-            combineMprSeg(r0, segR14, stack);
-
-            combineMprSeg(r0, segR21, stack);
-            combineMprSeg(r0, segR22, stack);
-            combineMprSeg(r0, segR23, stack);
-            combineMprSeg(r0, segR24, stack);
-
-            combineMprSeg(r0, segR31, stack);
-            combineMprSeg(r0, segR32, stack);
-            combineMprSeg(r0, segR33, stack);
-            combineMprSeg(r0, segR34, stack);
-
+            initScreen(segR1, fileName);
             initSegRender(r1.domId);
-            initSegRender(r2.domId);
-            initSegRender(r3.domId);
+
+            // initScreen(segR11, fileName);
+            // initScreen(segR12, fileName);
+            // initScreen(segR13, fileName);
+            // initScreen(segR14, fileName);
+            //
+            // initScreen(segR21, fileName);
+            // initScreen(segR22, fileName);
+            // initScreen(segR23, fileName);
+            // initScreen(segR24, fileName);
+            //
+            // initScreen(segR31, fileName);
+            // initScreen(segR32, fileName);
+            // initScreen(segR33, fileName);
+            // initScreen(segR34, fileName);
+
+            // combineMprSeg(r0, segR11, stack);
+            // combineMprSeg(r0, segR12, stack);
+            // combineMprSeg(r0, segR13, stack);
+            // combineMprSeg(r0, segR14, stack);
+            //
+            // combineMprSeg(r0, segR21, stack);
+            // combineMprSeg(r0, segR22, stack);
+            // combineMprSeg(r0, segR23, stack);
+            // combineMprSeg(r0, segR24, stack);
+            //
+            // combineMprSeg(r0, segR31, stack);
+            // combineMprSeg(r0, segR32, stack);
+            // combineMprSeg(r0, segR33, stack);
+            // combineMprSeg(r0, segR34, stack);
+
+            // initSegRender(r1.domId);
+            // initSegRender(r2.domId);
+            // initSegRender(r3.domId);
 
             adjustR1Orientation()
 
@@ -1257,6 +1339,14 @@ function loadZipPngs_old (zip) {
   return Promise.all(loadSequencesSeg);
 }
 
+function loadZipPng (zip) {
+  return new Promise((resolve, reject) => {
+    loadSegmentationRawdata(zip)
+      .then(data => {
+        resolve(data)
+      })
+  })
+}
 
 function loadZipPngs (zip) {
   const loadSequencesSeg = [];
@@ -1273,12 +1363,14 @@ function loadZipPngs (zip) {
 }
 
 function loadSegmentationRawdata (rawdata) {
+  console.log('loadSegmentationRawdata')
+  console.log(rawdata)
   return new Promise((resolve, reject) => {
     new PNG({filterType: 4}).parse(rawdata, function (error, data) {
       if (error) {
-        // console.log('Error : ' + error);
+        console.log('Error : ' + error);
       }
-      // console.log('loaded png' + data);
+      console.log('loaded png' + data);
       resolve(data);
     });
   });
@@ -1414,41 +1506,45 @@ function initSegRender(id) {
 
   }
 
-  stackHelper.index = 128;
+  stackHelper.index = 0;
 
   if (shouldShowSegmentation) {
     var uniforms = null;
     switch (id) {
       case r1.domId:
-        if (stackHelper.index < 64) {
-          uniforms = segR11.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index;
+        uniforms = segR1.shaderMat.uniforms;
+        uniforms.indexSliceToDisplay.value = stackHelper.index;
+        console.log(uniforms)
 
-          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
-          uniforms = segR12.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
-
-          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
-          uniforms = segR13.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
-
-          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
-          uniforms = segR14.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
-
-          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        }
+        // if (stackHelper.index < 64) {
+        //   uniforms = segR11.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index;
+        //
+        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
+        //   uniforms = segR12.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
+        //
+        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
+        //   uniforms = segR13.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
+        //
+        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
+        //   uniforms = segR14.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
+        //
+        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // }
 
         break;
       case r2.domId:
@@ -1525,6 +1621,7 @@ function initSegRender(id) {
 
 function onScroll (event) {
   // console.log('# onScroll');
+  return
   const id = event.target.domElement.id;
   let stackHelper = null;
 
@@ -1608,35 +1705,37 @@ function onScroll (event) {
     var uniforms = null;
     switch (id) {
       case r1.domId:
-        if (stackHelper.index < 64) {
-          uniforms = segR11.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index;
-
-          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
-          uniforms = segR12.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
-
-          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
-          uniforms = segR13.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
-
-          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
-          uniforms = segR14.shaderMat.uniforms;
-          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
-
-          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        }
+        uniforms = segR1.shaderMat.uniforms;
+        uniforms.indexSliceToDisplay.value = stackHelper.index;
+        // if (stackHelper.index < 64) {
+        //   uniforms = segR11.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index;
+        //
+        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
+        //   uniforms = segR12.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
+        //
+        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
+        //   uniforms = segR13.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
+        //
+        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
+        //   uniforms = segR14.shaderMat.uniforms;
+        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
+        //
+        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        // }
 
         break;
       case r2.domId:
@@ -1766,20 +1865,22 @@ export function onWindowResize () {
   // windowResize2D(r3);
 
   if (shouldShowSegmentation) {
-    windowResize2DSeg(segR11);
-    windowResize2DSeg(segR12);
-    windowResize2DSeg(segR13);
-    windowResize2DSeg(segR14);
+    windowResize2DSeg(segR1);
 
-    windowResize2DSeg(segR21);
-    windowResize2DSeg(segR22);
-    windowResize2DSeg(segR23);
-    windowResize2DSeg(segR24);
-
-    windowResize2DSeg(segR31);
-    windowResize2DSeg(segR32);
-    windowResize2DSeg(segR33);
-    windowResize2DSeg(segR34);
+    // windowResize2DSeg(segR11);
+    // windowResize2DSeg(segR12);
+    // windowResize2DSeg(segR13);
+    // windowResize2DSeg(segR14);
+    //
+    // windowResize2DSeg(segR21);
+    // windowResize2DSeg(segR22);
+    // windowResize2DSeg(segR23);
+    // windowResize2DSeg(segR24);
+    //
+    // windowResize2DSeg(segR31);
+    // windowResize2DSeg(segR32);
+    // windowResize2DSeg(segR33);
+    // windowResize2DSeg(segR34);
   }
 
   // computeOffset(r0);
@@ -1851,10 +1952,11 @@ function CameraCtrl2D (id, action) {
   if (shouldShowSegmentation) {
     switch (id) {
       case r1.domId:
-        segCameraCtrl2D(segR11, val)
-        segCameraCtrl2D(segR12, val)
-        segCameraCtrl2D(segR13, val)
-        segCameraCtrl2D(segR14, val)
+        segCameraCtrl2D(segR1, val)
+        // segCameraCtrl2D(segR11, val)
+        // segCameraCtrl2D(segR12, val)
+        // segCameraCtrl2D(segR13, val)
+        // segCameraCtrl2D(segR14, val)
         break;
       case r2.domId:
         segCameraCtrl2D(segR21, val)
@@ -1899,10 +2001,11 @@ export function Fit (id) {
   if (shouldShowSegmentation) {
     switch (id) {
       case r1.domId:
-        segFitBox(segR11)
-        segFitBox(segR12)
-        segFitBox(segR13)
-        segFitBox(segR14)
+        segFitBox(segR1)
+        // segFitBox(segR11)
+        // segFitBox(segR12)
+        // segFitBox(segR13)
+        // segFitBox(segR14)
         break;
       case r2.domId:
         segFitBox(segR21)
@@ -1970,6 +2073,7 @@ export function Horizontal (id) {
   switch (id) {
     case r1.domId:
       r1.camera.invertColumns();
+      segR1.camera.invertColumns();
       // segR11.camera.invertColumns();
       // segR12.camera.invertColumns();
       // segR13.camera.invertColumns();
@@ -1997,6 +2101,7 @@ export function Vertical (id) {
   switch (id) {
     case r1.domId:
       r1.camera.invertRows();
+      segR1.camera.invertRows();
       // segR11.camera.invertRows();
       // segR12.camera.invertRows();
       // segR13.camera.invertRows();
@@ -2020,10 +2125,13 @@ export function Vertical (id) {
 
 function  adjustR1Orientation () {
   // r1.camera.invertRows();
-  segR11.camera.invertRows();
-  segR12.camera.invertRows();
-  segR13.camera.invertRows();
-  segR14.camera.invertRows();
+
+  // segR1.camera.invertRows();
+
+  // segR11.camera.invertRows();
+  // segR12.camera.invertRows();
+  // segR13.camera.invertRows();
+  // segR14.camera.invertRows();
 }
 
 export function CameraCtrl (enable) {
@@ -2033,24 +2141,27 @@ export function CameraCtrl (enable) {
   // r3.controls.viewcontrol = enable;
 
   if (shouldShowSegmentation) {
-    segR11.controls.viewcontrol = enable;
-    segR12.controls.viewcontrol = enable;
-    segR13.controls.viewcontrol = enable;
-    segR14.controls.viewcontrol = enable;
-    segCameraCtrl(segR11, enable);
-    segCameraCtrl(segR12, enable);
-    segCameraCtrl(segR13, enable);
-    segCameraCtrl(segR14, enable);
+    segR1.controls.viewcontrol = enable;
+    segCameraCtrl(segR1, enable);
 
-    segCameraCtrl(segR21, enable);
-    segCameraCtrl(segR22, enable);
-    segCameraCtrl(segR23, enable);
-    segCameraCtrl(segR24, enable);
-
-    segCameraCtrl(segR31, enable);
-    segCameraCtrl(segR32, enable);
-    segCameraCtrl(segR33, enable);
-    segCameraCtrl(segR34, enable);
+    // segR11.controls.viewcontrol = enable;
+    // segR12.controls.viewcontrol = enable;
+    // segR13.controls.viewcontrol = enable;
+    // segR14.controls.viewcontrol = enable;
+    // segCameraCtrl(segR11, enable);
+    // segCameraCtrl(segR12, enable);
+    // segCameraCtrl(segR13, enable);
+    // segCameraCtrl(segR14, enable);
+    //
+    // segCameraCtrl(segR21, enable);
+    // segCameraCtrl(segR22, enable);
+    // segCameraCtrl(segR23, enable);
+    // segCameraCtrl(segR24, enable);
+    //
+    // segCameraCtrl(segR31, enable);
+    // segCameraCtrl(segR32, enable);
+    // segCameraCtrl(segR33, enable);
+    // segCameraCtrl(segR34, enable);
   }
 }
 
@@ -2220,7 +2331,7 @@ function clearWidgets () {
  */
 function initSegment(rendererObj){
   if (rendererObj.domElement === null) {
-  rendererObj.domElement = document.getElementById(rendererObj.domId);
+    rendererObj.domElement = document.getElementById(rendererObj.domId);
   } else {
     return;
   }
@@ -2261,6 +2372,9 @@ function initSegment(rendererObj){
 
   rendererObj.container = new THREE.Object3D();
   rendererObj.scene.add( rendererObj.container );
+
+  console.log('initSegment @@@')
+  console.log(rendererObj)
 
   // initScreen(rendererObj); // TODO : initScreen(rendererObj)
   // initBox();    // TODO : initBox(rendererObj)
@@ -2340,15 +2454,17 @@ function initBox(xspaceLength, yspaceLength, zspaceLength){
   segR11.camera.position.z = segR11.spaceLength.z;
 }
 
-function initScreen(render, fileName){
+function initScreen(render){
+  console.log(render)
   render.screenContainer = new THREE.Object3D();
 
-  var mosaicTexture = null
-  if (fileName !== null) {
-    mosaicTexture = THREE.ImageUtils.loadTexture( "../../../static/data/" + fileName + "/out_" + render.targetID + ".png" )
-  } else {
+  // var mosaicTexture = null
+  var mosaicTexture = new THREE.DataTexture(render.texture.data, 256, 256, THREE.RGBAFormat );
+  // if (fileName !== null) {
+  //   mosaicTexture = THREE.ImageUtils.loadTexture( "../../../static/data/" + fileName + "/out_" + render.targetID + ".png" )
+  // } else {
     // mosaicTexture = new THREE.DataTexture(render.texture.data, 256, 256*64, THREE.RGBAFormat );
-  }
+  // }
   // mosaicTexture.needsUpdate = true;
   mosaicTexture.magFilter = THREE.LinearFilter;
   mosaicTexture.minFilter = THREE.LinearFilter;
@@ -2372,7 +2488,7 @@ function initScreen(render, fileName){
       // the number of slice per column
       nbSlicePerCol: {
         type: "f",
-        value: 64.0
+        value: 1.0
       },
       // the number of slice in total
       nbSliceTotal: {
@@ -2426,6 +2542,10 @@ function initScreen(render, fileName){
   var geometry = new THREE.PlaneBufferGeometry( x, y, 1 );
   var plane = new THREE.Mesh( geometry, render.shaderMat );
   render.screenContainer.add( plane );
+
+
+  console.log(render)
+
 
   render.container.add( render.screenContainer );
   // var mosaicTexture = THREE.TextureLoader().load(render.texture.data);
