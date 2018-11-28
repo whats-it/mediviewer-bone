@@ -232,6 +232,7 @@
 
                   this.parseDicomTags(uploadedFile.from)
                   // Medic3DLeft.Horizontal('layout-left')
+                  this.$refs.layoutLeft.opacity = 100
 
                   // this.setLayoutsSize()
                 })
@@ -264,6 +265,7 @@
 
                   this.parseDicomTags(uploadedFile.from)
                   // Medic3DRight.Horizontal('layout-right')
+                  this.$refs.layoutRight.opacity = 100
 
                   // this.setLayoutsSize()
                 })
@@ -483,6 +485,7 @@
         }
       },
       mousedownLeft (e, from) {
+        this.$bus.$emit(busType.SHOW_MASK_OPACITY_POPUP, false)
         if (from === 'left') {
           this.isMouseDown = true
           this.$store.commit(mutationType.SELECT_CANVAS, this.$refs.layoutLeft)
@@ -646,18 +649,36 @@
             console.log('#Vertical')
             break
           case 'MaskOpacity':
+            console.log('#MaskOpacity')
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
               alert('Please select a Display.')
               return
             }
-            console.log('#MaskOpacity')
-            if (!this.focusedCanvas.opacity) {
-              if (state.focusedCanvas.opacity !== 0) {
-                state.focusedCanvas.opacity = 100
+            if (this.uploadedFileLeft && this.focusedCanvas.id === 'layout-left') {
+              if (!this.analysisResultLeft) {
+                alert('No segmentation data.')
+                return
               }
+              this.$bus.$emit(busType.SHOW_MASK_OPACITY_POPUP, true)
+            } else if (this.uploadedFileRight && this.focusedCanvas.id === 'layout-right') {
+              if (!this.analysisResultRight) {
+                alert('No segmentation data.')
+                return
+              }
+              this.$bus.$emit(busType.SHOW_MASK_OPACITY_POPUP, true)
+            } else {
+              alert('Dicom file not found.')
+              return
             }
-            this.$store.commit(mutationType.SET_MASK_OPACITY, this.focusedCanvas.opacity)
-            this.$bus.$emit(busType.SHOW_MASK_OPACITY_POPUP, true)
+
+
+            // if (!this.focusedCanvas.opacity) {
+            //   if (state.focusedCanvas.opacity !== 0) {
+            //     state.focusedCanvas.opacity = 100
+            //   }
+            // }
+            // this.$store.commit(mutationType.SET_MASK_OPACITY, this.focusedCanvas.opacity)
+            // this.$bus.$emit(busType.SHOW_MASK_OPACITY_POPUP, true)
             break;
           case 'ZoomIn':
             if (!this.focusedCanvas || !this.focusedCanvas.id) {
@@ -888,7 +909,7 @@
         if (from === 'left') {
           Medic3DLeft.loadSegmentationBoneWithUrl(url)
         } else if (from === 'right') {
-          // Medic3DRight.loadSegmentationBone(res)
+          Medic3DRight.loadSegmentationBoneWithUrl(url)
         }
 
         // fetch(url, { method: 'get' })
@@ -1138,35 +1159,18 @@
         let canvasId = this.focusedCanvas.id
         let dicomCanvas = null
         let maskCanvas1 = null
-        let maskCanvas2 = null
-        let maskCanvas3 = null
-        let maskCanvas4 = null
-        if (canvasId === 'layout-1-2') {
+        console.log(canvasId)
+        if (canvasId === 'layout-left') {
           dicomCanvas = document.getElementById('1')
           maskCanvas1 = document.getElementById('11')
-          maskCanvas2 = document.getElementById('12')
-          maskCanvas3 = document.getElementById('13')
-          maskCanvas4 = document.getElementById('14')
-        } else if (canvasId === 'layout-2-1') {
-          dicomCanvas = document.getElementById('2')
-          maskCanvas1 = document.getElementById('21')
-          maskCanvas2 = document.getElementById('22')
-          maskCanvas3 = document.getElementById('23')
-          maskCanvas4 = document.getElementById('24')
-        } else if (canvasId === 'layout-2-2') {
-          dicomCanvas = document.getElementById('3')
-          maskCanvas1 = document.getElementById('31')
-          maskCanvas2 = document.getElementById('32')
-          maskCanvas3 = document.getElementById('33')
-          maskCanvas4 = document.getElementById('34')
+        } else if (canvasId === 'layout-right') {
+          dicomCanvas = document.getElementById('101')
+          maskCanvas1 = document.getElementById('111')
         }
 
-        if (dicomCanvas && maskCanvas1 && maskCanvas2 && maskCanvas3 && maskCanvas4) {
-//          dicomCanvas.style.opacity = this.focusedCanvas.opacity / 100
+        if (dicomCanvas && maskCanvas1) {
+          // dicomCanvas.style.opacity = this.focusedCanvas.opacity / 100
           maskCanvas1.style.opacity = this.focusedCanvas.opacity / 100
-          maskCanvas2.style.opacity = this.focusedCanvas.opacity / 100
-          maskCanvas3.style.opacity = this.focusedCanvas.opacity / 100
-          maskCanvas4.style.opacity = this.focusedCanvas.opacity / 100
         } else {
           console.log('No Masking Canvas !')
         }

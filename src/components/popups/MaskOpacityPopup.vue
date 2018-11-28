@@ -5,8 +5,8 @@
     :resizable="false"
     :x="0" :y="400" :z="2000"
     :w="242" :h="376">
-    <div class="mask-opacity-popup-inner"
-         v-if="maskOpacity >= 0">
+    <div class="mask-opacity-popup-inner">
+         <!--v-if="maskOpacity >= 0">-->
       <div class="mask-opacity-header">
         <span>Mask Opacity</span>
         <img src="/static/images/icons/svg/btn-close-nor.svg"
@@ -17,17 +17,17 @@
         <div class="mask-opacity-body-top"
              @mousedown="stopMovable">
           <a
-            :class="{ active: maskOpacity === OPACITY_ZERO }"
+            :class="{ active: focusedCanvas.opacity === OPACITY_ZERO }"
             @click="maskOpacityClicked(OPACITY_ZERO)">
             <img :src="`/static/images/icons/svg/img-opacity-0.svg`">
           </a>
           <a
-            :class="{ active: maskOpacity === OPACITY_FIFTY }"
+            :class="{ active: focusedCanvas.opacity === OPACITY_FIFTY }"
             @click="maskOpacityClicked(OPACITY_FIFTY)">
             <img :src="`/static/images/icons/svg/img-opacity-50.svg`">
           </a>
           <a
-            :class="{ active: maskOpacity === OPACITY_HUNDRED }"
+            :class="{ active: focusedCanvas.opacity === OPACITY_HUNDRED }"
             @click="maskOpacityClicked(OPACITY_HUNDRED)">
             <img :src="`/static/images/icons/svg/img-opacity-100.svg`">
           </a>
@@ -42,7 +42,7 @@
             <img :src="`/static/images/icons/svg/btn-size-down.svg`">
           </a>
           <div>
-            <span>{{ maskOpacity }}</span>
+            <span>{{ segMaskOpacity }}</span>
           </div>
           <a
             @click="maskOpacitySizeUp()">
@@ -79,28 +79,53 @@
     name: 'MaskOpacity',
     computed: {
       ...mapGetters([
+        'focusedCanvas',
         'maskOpacity'
       ])
     },
     data () {
       return {
+        segMaskOpacity: 0,
         OPACITY_ZERO: 0,
         OPACITY_FIFTY: 50,
         OPACITY_HUNDRED: 100
       }
     },
+    created () {
+      this.$bus.$on(busType.SHOW_MASK_OPACITY_POPUP, this.showMaskOpacityPopupToggle)
+    },
     methods: {
+      showMaskOpacityPopupToggle (show) {
+        if (show) {
+          if (this.focusedCanvas && this.focusedCanvas.opacity) {
+            this.segMaskOpacity = this.focusedCanvas.opacity
+          }
+        }
+      },
       maskOpacityClicked (opacity) {
+        this.segMaskOpacity = opacity
+        this.focusedCanvas.opacity = opacity
         this.$store.commit(mutationType.SET_MASK_OPACITY, opacity)
         this.$bus.$emit(busType.MASK_OPACITY_CHANGED)
       },
       maskOpacitySizeDown () {
-        this.$store.commit(mutationType.SET_MASK_OPACITY, this.maskOpacity - 10)
+        // this.focusedCanvas.opacity -= 10
+        if (this.focusedCanvas.opacity === 0) {
+          return
+        }
+        this.$store.commit(mutationType.SET_MASK_OPACITY, this.focusedCanvas.opacity -= 10)
         this.$bus.$emit(busType.MASK_OPACITY_CHANGED)
+        this.segMaskOpacity = this.focusedCanvas.opacity
       },
       maskOpacitySizeUp () {
-        this.$store.commit(mutationType.SET_MASK_OPACITY, this.maskOpacity + 10)
+        console.log(this.focusedCanvas.opacity)
+        // this.focusedCanvas.opacity += 10
+        if (this.focusedCanvas.opacity === 100) {
+          return
+        }
+        this.$store.commit(mutationType.SET_MASK_OPACITY, this.focusedCanvas.opacity += 10)
         this.$bus.$emit(busType.MASK_OPACITY_CHANGED)
+        this.segMaskOpacity = this.focusedCanvas.opacity
       },
       closePopup (e) {
         this.$bus.$emit(busType.SHOW_MASK_OPACITY_POPUP, false)
