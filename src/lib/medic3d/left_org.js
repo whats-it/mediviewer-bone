@@ -184,8 +184,8 @@ const segR1 = {
   gui: null,
   guiParam : {},
   spaceLength : {
-    x: 640,
-    y: 512,
+    x: 256,
+    y: 256,
     z: 1
   },
   renderer : null,
@@ -588,8 +588,6 @@ export function init () {
       // r3.controls.update();
 
       if (shouldShowSegmentation) {
-        segR1.controls.update();
-
         // segR11.controls.update();
         // segR12.controls.update();
         // segR13.controls.update();
@@ -614,8 +612,6 @@ export function init () {
       // renderDo(r2);
       // renderDo(r3);
       if (shouldShowSegmentation) {
-        renderSeg(segR1);
-
         // renderSeg(segR11);
         // renderSeg(segR12);
         // renderSeg(segR13);
@@ -667,8 +663,6 @@ export function init () {
     // clearThree(r3.scene);
 
     // if (shouldShowSegmentation) {
-      clearThree(segR1.scene);
-
     //   clearThree(segR11.scene);
     //   clearThree(segR12.scene);
     //   clearThree(segR13.scene);
@@ -693,8 +687,6 @@ export function init () {
   initRenderer2D(r1);
 
   // if (shouldShowSegmentation) {
-    initSegment(segR1);
-
   //   initSegment(segR11);
   //   initSegment(segR12);
   //   initSegment(segR13);
@@ -853,7 +845,7 @@ export function loadZip (uploadedFile, cb) {
         loader.loadZip(buffer)  //
           .then(function () {
 
-            resetSegmentation();
+            // resetSegmentation();
             // {Array.<ModelsSeries>} Array of series properly merged.
             let series = loader.data[0].mergeSeries(loader.data)[0] // loader.data = series
             loader.free()
@@ -892,7 +884,7 @@ export function loadZip (uploadedFile, cb) {
             // segR13.domElement.addEventListener('click', onClick);
             // segR14.domElement.addEventListener('click', onClick);
             // add scroll event
-            // r1.controls.addEventListener('OnScroll', onScroll);
+            r1.controls.addEventListener('OnScroll', onScroll);
             // r2.controls.addEventListener('OnScroll', onScroll);
             // r3.controls.addEventListener('OnScroll', onScroll);
             // segR11.controls.addEventListener('OnScroll', onScroll);
@@ -1164,68 +1156,6 @@ export function loadSegmentation_org (uploadedFile) {
     });
 }
 
-export function loadSegmentationBoneWithUrl (segUrl) {
-  return new Promise((resolve, reject) => {
-    Request({
-        method: 'GET',
-        url: segUrl,
-        encoding: null // <- this one is important !
-    }, (error, response, body) => {
-      if (error || response.statusCode !== 200) {
-        return
-      }
-      new PNG({filterType: -1}).parse(body, function (error, data) {
-        console.log(body)
-        if (error) {
-          console.log('Error : ' + error);
-        }
-        console.log('loaded png' + data);
-        // resolve(data);
-
-        segR1.texture = data
-
-        var stack = getDicomStack();
-        if (stack !== null) {
-          shouldShowSegmentation = true;
-
-          initScreen(segR1, null)
-          combineMprSeg(r0, segR1, stack)
-          initSegRender(r1.domId)
-          adjustR1Orientation()
-
-          resolve(true)
-        }
-      });
-    })
-  })
-}
-
-export function loadSegmentationBone (rawData) {
-  return new Promise((resolve, reject) => {
-    new PNG({filterType: -1}).parse(rawData, function (error, data) {
-      if (error) {
-        console.log('Error : ' + error);
-      }
-      console.log('loaded png' + data);
-      // resolve(data);
-
-      segR1.texture = data
-
-      var stack = getDicomStack();
-      if (stack !== null) {
-        shouldShowSegmentation = true;
-
-        initScreen(segR1, null)
-        combineMprSeg(r0, segR1, stack)
-        initSegRender(r1.domId)
-        adjustR1Orientation()
-
-        resolve(true)
-      }
-    });
-  })
-}
-
 export function loadSegmentationLocal (segUrl, fileName) {
   return new Promise((resolve, reject) => {
     Request({
@@ -1247,6 +1177,11 @@ export function loadSegmentationLocal (segUrl, fileName) {
           return loadZipPngs(buffer)
         })
         .then(function (data) {
+          // console.log('Loaded seg. ' + data.length);
+          // reports = data.slice(0, 9);
+
+          // localSegmentFileName = fileName
+          console.log(localSegmentFileName)
 
           segR11.texture = data[9];
           segR12.texture = data[10];
@@ -1490,44 +1425,41 @@ function initSegRender(id) {
 
   }
 
-  stackHelper.index = 0;
+  stackHelper.index = 128;
 
   if (shouldShowSegmentation) {
     var uniforms = null;
     switch (id) {
       case r1.domId:
-        uniforms = segR1.shaderMat.uniforms;
-        uniforms.indexSliceToDisplay.value = stackHelper.index;
+        if (stackHelper.index < 64) {
+          uniforms = segR11.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index;
 
-        // if (stackHelper.index < 64) {
-        //   uniforms = segR11.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index;
-        //
-        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
-        //   uniforms = segR12.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
-        //
-        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
-        //   uniforms = segR13.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
-        //
-        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
-        //   uniforms = segR14.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
-        //
-        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // }
+          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
+          uniforms = segR12.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
+
+          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
+          uniforms = segR13.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
+
+          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
+          uniforms = segR14.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
+
+          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        }
 
         break;
       case r2.domId:
@@ -1687,38 +1619,35 @@ function onScroll (event) {
     var uniforms = null;
     switch (id) {
       case r1.domId:
-        uniforms = segR1.shaderMat.uniforms;
-        uniforms.indexSliceToDisplay.value = stackHelper.index;
+        if (stackHelper.index < 64) {
+          uniforms = segR11.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index;
 
-        // if (stackHelper.index < 64) {
-        //   uniforms = segR11.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index;
-        //
-        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
-        //   uniforms = segR12.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
-        //
-        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
-        //   uniforms = segR13.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
-        //
-        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
-        //   uniforms = segR14.shaderMat.uniforms;
-        //   uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
-        //
-        //   segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        //   segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
-        // }
+          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        } else if (64 <= stackHelper.index && stackHelper.index < 64 * 2) {
+          uniforms = segR12.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index - 64;
+
+          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        } else if (64 * 2 <= stackHelper.index && stackHelper.index < 64 * 3) {
+          uniforms = segR13.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 2;
+
+          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR14.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        } else if (64 * 3 <= stackHelper.index && stackHelper.index < 64 * 4) {
+          uniforms = segR14.shaderMat.uniforms;
+          uniforms.indexSliceToDisplay.value = stackHelper.index - 64 * 3;
+
+          segR11.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR12.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+          segR13.shaderMat.uniforms.indexSliceToDisplay.value = -1;
+        }
 
         break;
       case r2.domId:
@@ -1848,22 +1777,20 @@ export function onWindowResize () {
   // windowResize2D(r3);
 
   if (shouldShowSegmentation) {
-    windowResize2DSeg(segR1);
+    windowResize2DSeg(segR11);
+    windowResize2DSeg(segR12);
+    windowResize2DSeg(segR13);
+    windowResize2DSeg(segR14);
 
-    // windowResize2DSeg(segR11);
-    // windowResize2DSeg(segR12);
-    // windowResize2DSeg(segR13);
-    // windowResize2DSeg(segR14);
-    //
-    // windowResize2DSeg(segR21);
-    // windowResize2DSeg(segR22);
-    // windowResize2DSeg(segR23);
-    // windowResize2DSeg(segR24);
-    //
-    // windowResize2DSeg(segR31);
-    // windowResize2DSeg(segR32);
-    // windowResize2DSeg(segR33);
-    // windowResize2DSeg(segR34);
+    windowResize2DSeg(segR21);
+    windowResize2DSeg(segR22);
+    windowResize2DSeg(segR23);
+    windowResize2DSeg(segR24);
+
+    windowResize2DSeg(segR31);
+    windowResize2DSeg(segR32);
+    windowResize2DSeg(segR33);
+    windowResize2DSeg(segR34);
   }
 
   // computeOffset(r0);
@@ -1935,12 +1862,10 @@ function CameraCtrl2D (id, action) {
   if (shouldShowSegmentation) {
     switch (id) {
       case r1.domId:
-        segCameraCtrl2D(segR1, val)
-
-        // segCameraCtrl2D(segR11, val)
-        // segCameraCtrl2D(segR12, val)
-        // segCameraCtrl2D(segR13, val)
-        // segCameraCtrl2D(segR14, val)
+        segCameraCtrl2D(segR11, val)
+        segCameraCtrl2D(segR12, val)
+        segCameraCtrl2D(segR13, val)
+        segCameraCtrl2D(segR14, val)
         break;
       case r2.domId:
         segCameraCtrl2D(segR21, val)
@@ -1985,12 +1910,10 @@ export function Fit (id) {
   if (shouldShowSegmentation) {
     switch (id) {
       case r1.domId:
-        segFitBox(segR1)
-
-        // segFitBox(segR11)
-        // segFitBox(segR12)
-        // segFitBox(segR13)
-        // segFitBox(segR14)
+        segFitBox(segR11)
+        segFitBox(segR12)
+        segFitBox(segR13)
+        segFitBox(segR14)
         break;
       case r2.domId:
         segFitBox(segR21)
@@ -2058,7 +1981,6 @@ export function Horizontal (id) {
   switch (id) {
     case r1.domId:
       r1.camera.invertColumns();
-
       // segR11.camera.invertColumns();
       // segR12.camera.invertColumns();
       // segR13.camera.invertColumns();
@@ -2086,7 +2008,6 @@ export function Vertical (id) {
   switch (id) {
     case r1.domId:
       r1.camera.invertRows();
-
       // segR11.camera.invertRows();
       // segR12.camera.invertRows();
       // segR13.camera.invertRows();
@@ -2110,12 +2031,10 @@ export function Vertical (id) {
 
 function  adjustR1Orientation () {
   // r1.camera.invertRows();
-  segR1.camera.invertRows();
-
-  // segR11.camera.invertRows();
-  // segR12.camera.invertRows();
-  // segR13.camera.invertRows();
-  // segR14.camera.invertRows();
+  segR11.camera.invertRows();
+  segR12.camera.invertRows();
+  segR13.camera.invertRows();
+  segR14.camera.invertRows();
 }
 
 export function CameraCtrl (enable) {
@@ -2125,27 +2044,24 @@ export function CameraCtrl (enable) {
   // r3.controls.viewcontrol = enable;
 
   if (shouldShowSegmentation) {
-    segR1.controls.viewcontrol = enable;
-    segCameraCtrl(segR1, enable);
+    segR11.controls.viewcontrol = enable;
+    segR12.controls.viewcontrol = enable;
+    segR13.controls.viewcontrol = enable;
+    segR14.controls.viewcontrol = enable;
+    segCameraCtrl(segR11, enable);
+    segCameraCtrl(segR12, enable);
+    segCameraCtrl(segR13, enable);
+    segCameraCtrl(segR14, enable);
 
-    // segR11.controls.viewcontrol = enable;
-    // segR12.controls.viewcontrol = enable;
-    // segR13.controls.viewcontrol = enable;
-    // segR14.controls.viewcontrol = enable;
-    // segCameraCtrl(segR11, enable);
-    // segCameraCtrl(segR12, enable);
-    // segCameraCtrl(segR13, enable);
-    // segCameraCtrl(segR14, enable);
-    //
-    // segCameraCtrl(segR21, enable);
-    // segCameraCtrl(segR22, enable);
-    // segCameraCtrl(segR23, enable);
-    // segCameraCtrl(segR24, enable);
-    //
-    // segCameraCtrl(segR31, enable);
-    // segCameraCtrl(segR32, enable);
-    // segCameraCtrl(segR33, enable);
-    // segCameraCtrl(segR34, enable);
+    segCameraCtrl(segR21, enable);
+    segCameraCtrl(segR22, enable);
+    segCameraCtrl(segR23, enable);
+    segCameraCtrl(segR24, enable);
+
+    segCameraCtrl(segR31, enable);
+    segCameraCtrl(segR32, enable);
+    segCameraCtrl(segR33, enable);
+    segCameraCtrl(segR34, enable);
   }
 }
 
@@ -2438,16 +2354,13 @@ function initBox(xspaceLength, yspaceLength, zspaceLength){
 function initScreen(render, fileName){
   render.screenContainer = new THREE.Object3D();
 
-  var mosaicTexture = new THREE.DataTexture(render.texture.data, 640, 512*1, THREE.RGBAFormat );
-  // var mosaicTexture = THREE.ImageUtils.loadTexture( "../../../static/data/bone_result.png")
-
-  // var mosaicTexture = null
-  // if (fileName !== null) {
-  //   mosaicTexture = THREE.ImageUtils.loadTexture( "../../../static/data/" + fileName + "/out_" + render.targetID + ".png" )
-  // } else {
+  var mosaicTexture = null
+  if (fileName !== null) {
+    mosaicTexture = THREE.ImageUtils.loadTexture( "../../../static/data/" + fileName + "/out_" + render.targetID + ".png" )
+  } else {
     // mosaicTexture = new THREE.DataTexture(render.texture.data, 256, 256*64, THREE.RGBAFormat );
-  // }
-  mosaicTexture.needsUpdate = true;
+  }
+  // mosaicTexture.needsUpdate = true;
   mosaicTexture.magFilter = THREE.LinearFilter;
   mosaicTexture.minFilter = THREE.LinearFilter;
   //mosaicTexture.flipY = false;

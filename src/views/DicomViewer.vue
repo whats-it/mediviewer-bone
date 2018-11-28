@@ -231,7 +231,7 @@
                   this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
                   this.parseDicomTags(uploadedFile.from)
-                  Medic3DLeft.Horizontal('layout-left')
+                  // Medic3DLeft.Horizontal('layout-left')
 
                   // this.setLayoutsSize()
                 })
@@ -263,7 +263,7 @@
                   this.$store.commit(mutationType.SET_SHOW_TAGS, true)
 
                   this.parseDicomTags(uploadedFile.from)
-                  Medic3DRight.Horizontal('layout-right')
+                  // Medic3DRight.Horizontal('layout-right')
 
                   // this.setLayoutsSize()
                 })
@@ -885,34 +885,45 @@
       },
       loadSegmentation(data, from) {
         const url = 'http://' + data.image_url
-        fetch(url, { method: 'get' })
-          .then(res => (console.log(res), res.blob()))
-          .then(res => new File([res], `${from}.png`))
-          .then(res => {
-            const fileReader = new FileReader()
-            fileReader.onerror = () => {
-              fileReader.abort()
-              alert('Problem parsing segmentation file.')
-            }
+        if (from === 'left') {
+          Medic3DLeft.loadSegmentationBoneWithUrl(url)
+        } else if (from === 'right') {
+          // Medic3DRight.loadSegmentationBone(res)
+        }
 
-            fileReader.onload = () => {
-              if (from === 'left') {
-                Medic3DLeft.loadSegmentationBone(fileReader.result)
-              } else if (from === 'right') {
-                // Medic3DRight.loadSegmentationBone(res)
-              }
-            }
-            fileReader.readAsArrayBuffer(res)
+        // fetch(url, { method: 'get' })
+        //   .then(res => res.arrayBuffer())
+        //   .then(res => {
+        //     if (from === 'left') {
+        //       Medic3DLeft.loadSegmentationBone(res)
+        //     } else if (from === 'right') {
+        //       Medic3DRight.loadSegmentationBone(res)
+        //     }
+        //   })
 
-            // this.readFileAsArrayBuffer(res)
-            //   .then(res => {
-            //     if (from === 'left') {
-            //       Medic3DLeft.loadSegmentationBone(res)
-            //     } else if (from === 'right') {
-            //       // Medic3DRight.loadSegmentationBone(res)
-            //     }
-            //   })
-          })
+          //   console.log(res)
+
+          // })
+
+        // fetch(url, { method: 'get' })
+        //   .then(res => (console.log(res), res.blob()))
+        //   .then(res => new File([res], `${from}.png`))
+        //   .then(res => {
+        //     const fileReader = new FileReader()
+        //     fileReader.onerror = () => {
+        //       fileReader.abort()
+        //       alert('Problem parsing segmentation file.')
+        //     }
+        //
+        //     fileReader.onload = () => {
+        //       if (from === 'left') {
+        //         Medic3DLeft.loadSegmentationBone(fileReader.result)
+        //       } else if (from === 'right') {
+        //         // Medic3DRight.loadSegmentationBone(res)
+        //       }
+        //     }
+        //     fileReader.readAsArrayBuffer(res)
+        //   })
       },
       /**
        * DEPRECATED
