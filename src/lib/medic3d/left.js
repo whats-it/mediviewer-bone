@@ -663,8 +663,8 @@ export function init () {
     // console.log('Already setup');
     clearThree(r0.scene);
     clearThree(r1.scene);
-    // clearThree(r2.scene);
-    // clearThree(r3.scene);
+    clearThree(r2.scene);
+    clearThree(r3.scene);
 
     // if (shouldShowSegmentation) {
       clearThree(segR1.scene);
@@ -688,8 +688,8 @@ export function init () {
     // console.log('First time');
   }
   initRenderer3D(r0);
-  // initRenderer2D(r3);
-  // initRenderer2D(r2);
+  initRenderer2D(r3);
+  initRenderer2D(r2);
   initRenderer2D(r1);
 
   // if (shouldShowSegmentation) {
@@ -876,8 +876,8 @@ export function loadZip (uploadedFile, cb) {
             r0.scene.add(new Medic3D.Helpers.BoundingBox(stack));
 
             combineMpr(r0, r1, stack);
-            // combineMpr(r0, r2, stack);
-            // combineMpr(r0, r3, stack);
+            combineMpr(r0, r2, stack);
+            combineMpr(r0, r3, stack);
 
 
             initHelpersLocalizerAll(stack);
@@ -978,47 +978,47 @@ function combineMprSeg (target, plane, stack) {
 function initHelpersLocalizerAll (stack) {
 // create new mesh with Localizer shaders
   let plane1 = r1.stackHelper.slice.cartesianEquation();
-  // let plane2 = r2.stackHelper.slice.cartesianEquation();
-  // let plane3 = r3.stackHelper.slice.cartesianEquation();
+  let plane2 = r2.stackHelper.slice.cartesianEquation();
+  let plane3 = r3.stackHelper.slice.cartesianEquation();
 
 // localizer red slice
   initHelpersLocalizer(r1, stack, plane1,
     [
       {
-        plane: plane1,
-        color: new THREE.Color()
+        plane: plane2,
+        color: new THREE.Color(r2.stackHelper.borderColor)
       },
       {
-        plane: plane1,
-        color: new THREE.Color()
+        plane: plane3,
+        color: new THREE.Color(r3.stackHelper.borderColor)
       }
     ]);
 
 // localizer yellow slice
-//   initHelpersLocalizer(r2, stack, plane2,
-//     [
-//       {
-//         plane: plane1,
-//         color: new THREE.Color(r1.stackHelper.borderColor)
-//       },
-//       {
-//         plane: plane3,
-//         color: new THREE.Color(r3.stackHelper.borderColor)
-//       }
-//     ]);
+  initHelpersLocalizer(r2, stack, plane2,
+    [
+      {
+        plane: plane1,
+        color: new THREE.Color(r1.stackHelper.borderColor)
+      },
+      {
+        plane: plane3,
+        color: new THREE.Color(r3.stackHelper.borderColor)
+      }
+    ]);
 
 // localizer green slice
-//   initHelpersLocalizer(r3, stack, plane3,
-//     [
-//       {
-//         plane: plane1,
-//         color: new THREE.Color(r1.stackHelper.borderColor)
-//       },
-//       {
-//         plane: plane2,
-//         color: new THREE.Color(r2.stackHelper.borderColor)
-//       }
-//     ]);
+  initHelpersLocalizer(r3, stack, plane3,
+    [
+      {
+        plane: plane1,
+        color: new THREE.Color(r1.stackHelper.borderColor)
+      },
+      {
+        plane: plane2,
+        color: new THREE.Color(r2.stackHelper.borderColor)
+      }
+    ]);
 }
 
 function extractZip (zip, type, sort) {
