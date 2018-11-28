@@ -277,6 +277,9 @@
             })
         }
       },
+      /**
+       * DEPRECATED
+       */
       loadSegmentation (uploadFile) {
         this.loadingSpinner.loading = true
         window.setTimeout(() => {
@@ -859,6 +862,7 @@
                     } else if (from === 'right') {
                       this.analysisResultRight = data
                     }
+                    this.loadSegmentation(data, from)
                     this.loadingSpinner.loading = false
                   })
                   .catch(e => {
@@ -879,6 +883,40 @@
             })
         }
       },
+      loadSegmentation(data, from) {
+        const url = 'http://' + data.image_url
+        fetch(url, { method: 'get' })
+          .then(res => (console.log(res), res.blob()))
+          .then(res => new File([res], `${from}.png`))
+          .then(res => {
+            const fileReader = new FileReader()
+            fileReader.onerror = () => {
+              fileReader.abort()
+              alert('Problem parsing segmentation file.')
+            }
+
+            fileReader.onload = () => {
+              if (from === 'left') {
+                Medic3DLeft.loadSegmentationBone(fileReader.result)
+              } else if (from === 'right') {
+                // Medic3DRight.loadSegmentationBone(res)
+              }
+            }
+            fileReader.readAsArrayBuffer(res)
+
+            // this.readFileAsArrayBuffer(res)
+            //   .then(res => {
+            //     if (from === 'left') {
+            //       Medic3DLeft.loadSegmentationBone(res)
+            //     } else if (from === 'right') {
+            //       // Medic3DRight.loadSegmentationBone(res)
+            //     }
+            //   })
+          })
+      },
+      /**
+       * DEPRECATED
+       */
       fetchBrainRoiSegmentation (fileName) {
         this.loadingSpinner.loading = true
         const formData = new FormData()
@@ -952,6 +990,9 @@
 //            this.loadingSpinner.loading = false
 //          })
       },
+      /**
+       * DEPRECATED
+       */
       loadAutoSegmentation (url, fileName) {
 //        Medic3D.loadSegmentationLocal(url, true)
 //        Medic3D.loadSegmentationLocal('http://210.116.109.38:20012/zip?fileid=' + fileId, true)
