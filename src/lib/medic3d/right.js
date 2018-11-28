@@ -173,31 +173,8 @@ const r3 = {
   offset: null
 };
 
-const segDummy = {
-  domId: null,
-  domElement: null,
-  targetID: null,
-  gui: null,
-  guiParam : {},
-  spaceLength : {
-    x: 256,
-    y: 256,
-    z: 64
-  },
-  renderer : null,
-  scene : null,
-  camera : null,
-  container : null,
-  shaderMat : null,
-  boxHelper : null,
-  screenContainer : null,
-  style: {
-    position: 'absolute',
-    top: 0,
-    left: 0
-  },
-  offset: null
-}
+
+
 
 
 
@@ -229,6 +206,35 @@ const segR1 = {
 }
 
 
+
+
+
+
+const segDummy = {
+  domId: null,
+  domElement: null,
+  targetID: null,
+  gui: null,
+  guiParam : {},
+  spaceLength : {
+    x: 256,
+    y: 256,
+    z: 64
+  },
+  renderer : null,
+  scene : null,
+  camera : null,
+  container : null,
+  shaderMat : null,
+  boxHelper : null,
+  screenContainer : null,
+  style: {
+    position: 'absolute',
+    top: 0,
+    left: 0
+  },
+  offset: null
+}
 
 const segR11 = {
   domId: r1.domId,

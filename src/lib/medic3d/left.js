@@ -173,6 +173,43 @@ const r3 = {
   offset: null
 };
 
+
+
+
+
+const segR1 = {
+  domId: r1.domId,
+  domElement: null,
+  targetID: 11,
+  gui: null,
+  guiParam : {},
+  spaceLength : {
+    x: 256,
+    y: 256,
+    z: 1
+  },
+  renderer : null,
+  scene : null,
+  camera : null,
+  container : null,
+  shaderMat : null,
+  boxHelper : null,
+  screenContainer : null,
+  style: {
+    position: 'absolute',
+    top: 0,
+    left: 0
+  },
+  texture: null,
+  offset: null
+}
+
+
+
+
+
+
+
 const segDummy = {
   domId: null,
   domElement: null,
@@ -197,10 +234,6 @@ const segDummy = {
     left: 0
   },
   offset: null
-}
-
-const segR1 = {
-
 }
 
 const segR11 = {
@@ -945,11 +978,11 @@ function initHelpersLocalizerAll (stack) {
     [
       {
         plane: plane1,
-        color: new THREE.Color(r1.stackHelper.borderColor)
+        color: new THREE.Color()
       },
       {
         plane: plane1,
-        color: new THREE.Color(r1.stackHelper.borderColor)
+        color: new THREE.Color()
       }
     ]);
 
