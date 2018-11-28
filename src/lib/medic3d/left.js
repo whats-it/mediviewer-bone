@@ -184,8 +184,8 @@ const segR1 = {
   gui: null,
   guiParam : {},
   spaceLength : {
-    x: 640,
-    y: 512,
+    x: 1132,
+    y: 860,
     z: 1
   },
   renderer : null,
@@ -1220,6 +1220,8 @@ export function loadSegmentationBone (rawData) {
         initSegRender(r1.domId)
         adjustR1Orientation()
 
+        segR1.camera.invertColumns();
+
         resolve(true)
       }
     });
@@ -2058,6 +2060,7 @@ export function Horizontal (id) {
   switch (id) {
     case r1.domId:
       r1.camera.invertColumns();
+      segR1.camera.invertColumns();
 
       // segR11.camera.invertColumns();
       // segR12.camera.invertColumns();
@@ -2086,6 +2089,7 @@ export function Vertical (id) {
   switch (id) {
     case r1.domId:
       r1.camera.invertRows();
+      segR1.camera.invertRows();
 
       // segR11.camera.invertRows();
       // segR12.camera.invertRows();
@@ -2438,7 +2442,7 @@ function initBox(xspaceLength, yspaceLength, zspaceLength){
 function initScreen(render, fileName){
   render.screenContainer = new THREE.Object3D();
 
-  var mosaicTexture = new THREE.DataTexture(render.texture.data, 640, 512*1, THREE.RGBAFormat );
+  var mosaicTexture = new THREE.DataTexture(render.texture.data, 1132, 860*1, THREE.RGBAFormat );
   // var mosaicTexture = THREE.ImageUtils.loadTexture( "../../../static/data/bone_result.png")
 
   // var mosaicTexture = null

@@ -908,8 +908,14 @@
         const url = 'http://' + data.image_url
         if (from === 'left') {
           Medic3DLeft.loadSegmentationBoneWithUrl(url)
+            .then(res => {
+              Medic3DLeft.Horizontal('layout-left')
+            })
         } else if (from === 'right') {
           Medic3DRight.loadSegmentationBoneWithUrl(url)
+            .then(res => {
+              Medic3DRight.Horizontal('layout-right')
+            })
         }
 
         // fetch(url, { method: 'get' })
@@ -1168,7 +1174,7 @@
           maskCanvas1 = document.getElementById('111')
         }
 
-        if (dicomCanvas && maskCanvas1) {
+        if (maskCanvas1) {
           // dicomCanvas.style.opacity = this.focusedCanvas.opacity / 100
           maskCanvas1.style.opacity = this.focusedCanvas.opacity / 100
         } else {
